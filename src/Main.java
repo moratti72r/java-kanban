@@ -1,34 +1,33 @@
+import task.Epic;
+import task.Subtask;
+import task.TaskStatus;
+import taskmanager.Manager;
+
 public class Main {
 
     public static void main(String[] args) {
         System.out.println("Поехали!");
         Manager manager = new Manager();
 
-        Epic epic1 = new Epic(0, "Автомобиль",
-                "Починить автомобиль", manager.NEW);
-        Subtask subtask1 = new Subtask(0, "Аккумулятор",
-                "Зарядить или заменить аккумулятор на автомобиле",
-                manager.NEW, epic1);
-        Subtask subtask2 = new Subtask(0, "Колеса",
-                "Проверить давление в шинах",
-                manager.NEW, epic1);
+        Epic epic1 = new Epic(0,"Автомобиль","Подготовить к поездке", TaskStatus.getNEW());
+        manager.createEpic(epic1);
+        manager.createSubtask(new Subtask(0,"Топливо","Заправить полный бак бензина",TaskStatus.getNEW(),epic1));
+        manager.createSubtask(new Subtask(0,"Шины","Проверить давление в шинах",TaskStatus.getNEW(),epic1));
 
-        Epic epic2 = new Epic(0, "Здоровье", "Заняться здоровьем", manager.NEW);
-        Subtask subtask3 = new Subtask(0, "Нервы",
-                "Выпить пиво, чтобы не нервничать при решении данной задачи" +
-                        "И отправить задачу на проверку для получение подсказок",
-                manager.NEW, epic2);
+        Epic epic2 = new Epic(0,"Техническое задание","Проверить техническое задание в классе Main", TaskStatus.getNEW());
+        manager.createEpic(epic2);
+        manager.createSubtask(new Subtask(0,"Коммит","Правильно написать коммит при отправке",TaskStatus.getNEW(),epic2));
 
-        manager.createTask(epic1);
-        manager.createTask(subtask1);
-        manager.createTask(subtask2);
-        manager.createTask(epic2);
-        manager.createTask(subtask3);
+        System.out.println(manager.getMapEpics());
+        System.out.println(manager.getMapSubtasks());
+        System.out.println(manager.getMapTasks());
 
-        System.out.println(manager.getTasks(manager.mapTasks));
-        System.out.println(manager.getTasks(manager.mapSubtasks));
-        System.out.println(manager.getTasks(manager.mapEpics));
+        manager.upDateSubtask(new Subtask(2,"Топливо","Заправить полный бак бензина",TaskStatus.getDONE(),epic1));
+        System.out.println(manager.getMapEpics());
+        System.out.println(manager.getMapSubtasks());
 
-
+        manager.removeById(2);
+        System.out.println(manager.getMapSubtasks());
+        System.out.println(manager.getMapEpics());
     }
 }
