@@ -12,7 +12,7 @@ public class Main {
         Epic epic1 = new Epic(0,"Автомобиль","Подготовить к поездке", TaskStatus.getNEW());
         manager.createEpic(epic1);
         manager.createSubtask(new Subtask(0,"Топливо","Заправить полный бак бензина",TaskStatus.getNEW(),epic1));
-        manager.createSubtask(new Subtask(0,"Шины","Проверить давление в шинах",TaskStatus.getNEW(),epic1));
+        manager.createSubtask(new Subtask(0,"Шины","Проверить давление в шинах",TaskStatus.getDONE(),epic1));
 
         Epic epic2 = new Epic(0,"Техническое задание","Проверить техническое задание в классе Main", TaskStatus.getNEW());
         manager.createEpic(epic2);

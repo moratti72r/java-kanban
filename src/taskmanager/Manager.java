@@ -36,6 +36,7 @@ public class Manager {
         idTask++;
         subtask.setId(idTask);
         subtask.getEpic().addSubtask(subtask);
+        subtask.getEpic().updateStatus();
         mapSubtasks.put(subtask.getId(), subtask);
     }
 
@@ -97,15 +98,14 @@ public class Manager {
 
     public void upDateSubtask(Subtask subtask) {
         if (mapSubtasks.containsKey(subtask.getId())){
-
             mapSubtasks.put(subtask.getId(),subtask);
+            subtask.getEpic().getSubtasks().put (subtask.getId(), subtask);
             subtask.getEpic().updateStatus();
         }
     }
 
     public void upDateEpic (Epic epic){
         if (mapEpics.containsKey(epic.getId())){
-            epic.getSubtasks().clear();
             for (Subtask subtask: mapSubtasks.values()) {
                 if (subtask.getEpic().equals(epic)){
                     mapSubtasks.remove(subtask.getId());
