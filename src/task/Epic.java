@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class Epic extends Task {
-//    private ArrayList<Subtask> subtasks = new ArrayList<>();
     HashMap<Integer,Subtask> subtasks = new HashMap<>();
     public Epic(Integer id, String name, String specification, TaskStatus status) {
         super(id, name, specification, status);

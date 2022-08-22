@@ -35,9 +35,14 @@ public class Manager {
     public void createSubtask(Subtask subtask) {
         idTask++;
         subtask.setId(idTask);
-        subtask.getEpic().addSubtask(subtask);
-        subtask.getEpic().updateStatus();
-        mapSubtasks.put(subtask.getId(), subtask);
+        for (Epic epic:
+             mapEpics.values()) {
+            if (epic.equals(subtask.getEpic())) {
+                epic.addSubtask(subtask);
+                epic.updateStatus();
+                mapSubtasks.put(subtask.getId(), subtask);
+            }
+        }
     }
 
     public void createEpic(Epic epic) {
@@ -68,11 +73,13 @@ public class Manager {
         if (mapTasks.containsKey(id)){
             mapTasks.remove(id);
         }else if (mapSubtasks.containsKey(id)){
-            for (Epic epic: mapEpics.values()) {
-                epic.getSubtasks().remove(id);
-            }
+            mapSubtasks.get(id).getEpic().getSubtasks().remove(id);
+            mapSubtasks.get(id).getEpic().updateStatus();
             mapSubtasks.remove(id);
         }else if (mapEpics.containsKey(id)){
+            for (Integer idSubtask:mapEpics.get(id).getSubtasks().keySet()){
+                mapSubtasks.remove(idSubtask);
+            }
             mapEpics.remove(id);
         }
     }
@@ -106,11 +113,6 @@ public class Manager {
 
     public void upDateEpic (Epic epic){
         if (mapEpics.containsKey(epic.getId())){
-            for (Subtask subtask: mapSubtasks.values()) {
-                if (subtask.getEpic().equals(epic)){
-                    mapSubtasks.remove(subtask.getId());
-                }
-            }
             mapEpics.put(epic.getId(), epic);
         }
     }

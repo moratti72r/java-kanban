@@ -29,5 +29,9 @@ public class Main {
         manager.removeById(2);
         System.out.println(manager.getMapSubtasks());
         System.out.println(manager.getMapEpics());
+
+        manager.removeById(1);
+        System.out.println(manager.getMapSubtasks());
+        System.out.println(manager.getMapEpics());
     }
 }

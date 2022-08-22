@@ -8,13 +8,6 @@ public class Subtask extends Task {
     public Subtask(Integer id, String name, String specification, TaskStatus status, Epic epic){
         super(id, name, specification, status);
         this.epic = epic;
-//        for (Subtask subtask : epic.getSubtasks()) {
-//            if (this.id== subtask.getId()){
-//                epic.getSubtasks().remove(subtask);
-//            }
-//        }
-//        epic.addSubtask(this);
-//        epic.updateStatus();
     }
 
     public Epic getEpic() {
