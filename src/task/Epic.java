@@ -25,12 +25,12 @@ public class Epic extends Task {
                  if (status.equals(subtask.status)) {
                     this.status = status;
                 } else {
-                    this.status = TaskStatus.getIsProgress();
+                    this.status = TaskStatus.IS_PROGRESS;
                     break;
                 }
             }
         } else {
-            this.status = TaskStatus.getNEW();
+            this.status = TaskStatus.NEW;
         }
     }
 

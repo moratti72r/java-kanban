@@ -3,15 +3,14 @@ package task;
 import java.util.Objects;
 
 public class Subtask extends Task {
-    private Epic epic;
-
+    private Integer epicId;
     public Subtask(Integer id, String name, String specification, TaskStatus status, Epic epic){
         super(id, name, specification, status);
-        this.epic = epic;
+        this.epicId = epic.getId();
     }
 
-    public Epic getEpic() {
-        return epic;
+    public Integer getEpicId() {
+        return epicId;
     }
 
     @Override
@@ -20,7 +19,7 @@ public class Subtask extends Task {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Subtask subtask = (Subtask) o;
-        return Objects.equals(epic, subtask.epic);
+        return Objects.equals(epicId, subtask.epicId);
     }
 
     @Override
@@ -35,7 +34,7 @@ public class Subtask extends Task {
                 ", name='" + name + '\'' +
                 ", specification='" + specification + '\'' +
                 ", status='" + status + '\'' +
-                " epicName='" + epic.getName() + '\'' +
+                " epicId='" + epicId + '\'' +
                 '}';
     }
 }

@@ -3,8 +3,6 @@ package taskmanager;
 import task.Epic;
 import task.Subtask;
 import task.Task;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Manager {
@@ -35,14 +33,9 @@ public class Manager {
     public void createSubtask(Subtask subtask) {
         idTask++;
         subtask.setId(idTask);
-        for (Epic epic:
-             mapEpics.values()) {
-            if (epic.equals(subtask.getEpic())) {
-                epic.addSubtask(subtask);
-                epic.updateStatus();
-                mapSubtasks.put(subtask.getId(), subtask);
-            }
-        }
+        mapEpics.get(subtask.getEpicId()).addSubtask(subtask);
+        mapEpics.get(subtask.getEpicId()).updateStatus();
+        mapSubtasks.put(subtask.getId(), subtask);
     }
 
     public void createEpic(Epic epic) {
@@ -73,8 +66,8 @@ public class Manager {
         if (mapTasks.containsKey(id)){
             mapTasks.remove(id);
         }else if (mapSubtasks.containsKey(id)){
-            mapSubtasks.get(id).getEpic().getSubtasks().remove(id);
-            mapSubtasks.get(id).getEpic().updateStatus();
+            mapEpics.get(mapSubtasks.get(id).getEpicId()).getSubtasks().remove(id);
+            mapEpics.get(mapSubtasks.get(id).getEpicId()).updateStatus();
             mapSubtasks.remove(id);
         }else if (mapEpics.containsKey(id)){
             for (Integer idSubtask:mapEpics.get(id).getSubtasks().keySet()){
@@ -106,8 +99,8 @@ public class Manager {
     public void upDateSubtask(Subtask subtask) {
         if (mapSubtasks.containsKey(subtask.getId())){
             mapSubtasks.put(subtask.getId(),subtask);
-            subtask.getEpic().getSubtasks().put (subtask.getId(), subtask);
-            subtask.getEpic().updateStatus();
+            mapEpics.get(subtask.getEpicId()).getSubtasks().put(subtask.getId(), subtask);
+            mapEpics.get(subtask.getEpicId()).updateStatus();
         }
     }
 
