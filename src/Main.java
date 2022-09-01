@@ -1,13 +1,16 @@
+import historymanager.HistoryManager;
 import task.Epic;
 import task.Subtask;
 import task.TaskStatus;
 import taskmanager.Manager;
+import taskmanager.Managers;
 
 public class Main {
 
     public static void main(String[] args) {
         System.out.println("Поехали!");
-        Manager manager = new Manager();
+        Manager manager = Managers.getDefault();
+        HistoryManager history = Managers.getDefaultHistory();
 
         Epic epic1 = new Epic(0,"Автомобиль","Подготовить к поездке", TaskStatus.NEW);
         manager.createEpic(epic1);
@@ -22,16 +25,20 @@ public class Main {
         System.out.println(manager.getMapSubtasks());
         System.out.println(manager.getMapTasks());
 
-        manager.upDateSubtask(new Subtask(2,"Топливо","Заправить полный бак бензина",TaskStatus.DONE,epic1));
-        System.out.println(manager.getMapEpics());
-        System.out.println(manager.getMapSubtasks());
+        manager.getById(2); //1
+        System.out.println(history.getHistory());
 
-        manager.removeById(2);
-        System.out.println(manager.getMapSubtasks());
-        System.out.println(manager.getMapEpics());
+        manager.getById(3); //2
+        manager.getById(2); //3
+        manager.getById(3); //4
+        manager.getById(2); //5
+        manager.getById(3); //6
+        manager.getById(2); //7
+        manager.getById(3); //8
+        manager.getById(2); //9
+        manager.getById(3); //10
+        manager.getById(5); //11
 
-        manager.removeById(1);
-        System.out.println(manager.getMapSubtasks());
-        System.out.println(manager.getMapEpics());
+        System.out.println(history.getHistory());
     }
 }
