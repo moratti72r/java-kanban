@@ -1,5 +1,6 @@
 package taskmanager;
 
+import historymanager.HistoryManager;
 import task.Epic;
 import task.Subtask;
 import task.Task;
@@ -33,6 +34,8 @@ public interface Manager {
     public void upDateSubtask(Subtask subtask) ;
 
     public void upDateEpic (Epic epic);
+
+    public HistoryManager getHistory();
 
     public HashMap<Integer, Subtask> getSubtasksFromEpic(Epic epic);
 

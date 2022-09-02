@@ -2,11 +2,12 @@ package historymanager;
 
 import task.Task;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager{
 
-    List<Task> history = new ArrayList<>();
+    private List<Task> history = new LinkedList<>();
 
     @Override
     public void add(Task task) {
@@ -20,6 +21,8 @@ public class InMemoryHistoryManager implements HistoryManager{
 
     @Override
     public List<Task> getHistory() {
-        return history;
+        List<Task> taskHistory = new LinkedList<>();
+        taskHistory = history;
+        return taskHistory;
     }
 }

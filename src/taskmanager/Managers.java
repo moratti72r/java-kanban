@@ -5,7 +5,7 @@ import historymanager.InMemoryHistoryManager;
 
 public class Managers {
     private static final Manager inMemoryTaskManager = new InMemoryTaskManager();
-    private static final HistoryManager historyManager = new InMemoryHistoryManager();
+    private static final HistoryManager historyManager = inMemoryTaskManager.getHistory();
 
 
     public static Manager getDefault(){

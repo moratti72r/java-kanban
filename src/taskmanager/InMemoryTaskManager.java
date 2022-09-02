@@ -1,5 +1,7 @@
 package taskmanager;
 
+import historymanager.HistoryManager;
+import historymanager.InMemoryHistoryManager;
 import task.Epic;
 import task.Subtask;
 import task.Task;
@@ -8,6 +10,7 @@ import static taskmanager.Managers.getDefaultHistory;
 
 public class InMemoryTaskManager implements Manager  {
     private Integer idTask = 0;
+    private HistoryManager history = new InMemoryHistoryManager();
 
     private HashMap<Integer, Task> mapTasks = new HashMap<>();
     private HashMap<Integer, Subtask> mapSubtasks = new HashMap<>();
@@ -91,13 +94,13 @@ public class InMemoryTaskManager implements Manager  {
         Task task = null;
         if (mapTasks.containsKey(id)){
             task = mapTasks.get(id);
-            getDefaultHistory().add(task);
+            history.add(task);
         }else if (mapSubtasks.containsKey(id)){
             task = mapSubtasks.get(id);
-            getDefaultHistory().add(task);
+            history.add(task);
         }else if (mapEpics.containsKey(id)){
             task = mapEpics.get(id);
-            getDefaultHistory().add(task);
+            history.add(task);
         }
         return task;
     }
@@ -125,6 +128,11 @@ public class InMemoryTaskManager implements Manager  {
         if (mapEpics.containsKey(epic.getId())){
             mapEpics.put(epic.getId(), epic);
         }
+    }
+
+    @Override
+    public HistoryManager getHistory(){
+        return history;
     }
 
     @Override
