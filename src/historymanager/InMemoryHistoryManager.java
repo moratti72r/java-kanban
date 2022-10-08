@@ -1,30 +1,25 @@
 package historymanager;
 
-import task.Epic;
-import task.Subtask;
 import task.Task;
 
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private final CustomLinkedList<Task> customLinkedList = new CustomLinkedList();
+    private final CustomLinkedList customLinkedList = new CustomLinkedList();
 
     @Override
     public void add(Task task) {
+        if (customLinkedList.getTasks() != null && customLinkedList.getTasks().contains(task)) {
+            customLinkedList.removeNode(task.getId());
+        }
         customLinkedList.linkLast(task);
     }
 
     @Override
     public void remove(int id) {
-        for (Task task : customLinkedList.getTasks()) {
-            if (task instanceof Epic) {
-                for (Subtask subtask : ((Epic) task).getSubtasks().values()) {
-                    customLinkedList.removeNode(subtask.getId());
-                }
-                customLinkedList.removeNode(id);
-            } else customLinkedList.removeNode(id);
-        }
+        customLinkedList.removeNode(id);
+
     }
 
     @Override
