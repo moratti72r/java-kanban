@@ -1,6 +1,5 @@
 package historymanager;
 
-import task.Epic;
 import task.Task;
 
 import java.util.ArrayList;
@@ -8,26 +7,26 @@ import java.util.HashMap;
 
 public class CustomLinkedList {
 
-    class Node<Task> {
-        public Node<Task> prev;
+    class Node {
+        public Node prev;
         public Task data;
-        public Node<Task> next;
+        public Node next;
 
-        public Node(Node<Task> prev, Task data, Node<Task> next) {
+        public Node(Node prev, Task data, Node next) {
             this.prev = prev;
             this.data = data;
             this.next = next;
         }
     }
 
-    private Node<Task> head;
-    private Node<Task> tail;
-    private HashMap<Integer, Node<Task>> nodeMap = new HashMap<>();
+    private Node head;
+    private Node tail;
+    private HashMap<Integer, Node> nodeMap = new HashMap<>();
 
 
     public void linkLast(Task task) {
-        final Node<Task> oldTail = tail;
-        final Node<Task> newNode = new Node<>(oldTail, task, null);
+        Node oldTail = tail;
+        Node newNode = new Node(oldTail, task, null);
         nodeMap.put(task.getId(), newNode);
         tail = newNode;
         if (oldTail == null) {
@@ -38,7 +37,7 @@ public class CustomLinkedList {
         }
     }
 
-    public void removeNode(Node<Task> node) {
+    public void removeNode(Node node) {
         if (nodeMap.containsKey(node.data.getId())) {
             if (node == head && tail != head) {
                 head = node.next;
@@ -51,7 +50,6 @@ public class CustomLinkedList {
             } else if (head == tail) {
                 head = null;
                 tail = null;
-                nodeMap.remove(node.data.getId());
             } else {
                 node.prev.next = node.next;
                 node.next.prev = node.prev;
@@ -63,29 +61,23 @@ public class CustomLinkedList {
     }
 
     public void removeNode(Integer id) {
-        if (nodeMap.get(id).data instanceof Epic) {
-            for (Integer idSubtask : ((Epic) nodeMap.get(id).data).getSubtasks().keySet()) {
-                if (nodeMap.containsKey(idSubtask)) {
-                    removeNode(nodeMap.get(idSubtask));
-                }
-            }
-        }
         removeNode(nodeMap.get(id));
+    }
+
+    public boolean contains(Task task) {
+        if (nodeMap.containsKey(task.getId())) {
+            return true;
+        } else return false;
     }
 
     public ArrayList<Task> getTasks() {
         ArrayList<Task> tasks = new ArrayList<>();
-        if (!nodeMap.isEmpty()) {
-            Node<Task> node = head;
+        Node node = head;
+        while (node != null) {
             tasks.add(node.data);
-            while (node.next != null) {
-                node = node.next;
-                tasks.add(node.data);
-            }
-            return tasks;
-        } else {
-            return null;
+            node = node.next;
         }
+        return tasks;
     }
 }
 
