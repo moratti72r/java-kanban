@@ -35,7 +35,7 @@ public class Main {
         System.out.println(manager.getMapEpics());
         System.out.println(manager.getMapSubtasks());
         System.out.println(manager.getMapTasks());
-
+        history.remove(2);
         manager.getById(1); //1
         System.out.println(history.getHistory());
 

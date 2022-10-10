@@ -61,7 +61,9 @@ public class CustomLinkedList {
     }
 
     public void removeNode(Integer id) {
-        removeNode(nodeMap.get(id));
+        if (nodeMap.containsKey(id)) {
+            removeNode(nodeMap.get(id));
+        }
     }
 
     public boolean contains(Task task) {
