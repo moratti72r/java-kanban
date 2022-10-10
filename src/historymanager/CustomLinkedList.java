@@ -67,9 +67,7 @@ public class CustomLinkedList {
     }
 
     public boolean contains(Task task) {
-        if (nodeMap.containsKey(task.getId())) {
-            return true;
-        } else return false;
+        return nodeMap.containsKey(task.getId());
     }
 
     public ArrayList<Task> getTasks() {
