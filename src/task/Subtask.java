@@ -4,13 +4,19 @@ import java.util.Objects;
 
 public class Subtask extends Task {
     private Integer epicId;
-    public Subtask(Integer id, String name, String specification, TaskStatus status, Epic epic){
+
+    public Subtask(Integer id, String name, String specification, TaskStatus status, Epic epic) {
         super(id, name, specification, status);
         this.epicId = epic.getId();
     }
 
     public Integer getEpicId() {
         return epicId;
+    }
+
+    @Override
+    public TaskType getType() {
+        return TaskType.SUBTASK;
     }
 
     @Override
@@ -29,13 +35,8 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        return "Subtask{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", specification='" + specification + '\'' +
-                ", status='" + status + '\'' +
-                " epicId='" + epicId + '\'' +
-                '}';
+        return id + "," + getType() + "," + name + "," + status + "," + specification + "," + epicId;
     }
 }
+
 

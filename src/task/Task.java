@@ -24,6 +24,10 @@ public class Task {
         this.id = id;
     }
 
+    public TaskType getType() {
+        return TaskType.TASK;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -42,11 +46,10 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", specification='" + specification + '\'' +
-                ", status='" + status + '\'' +
-                '}';
+        return id + ","
+                + getType() + ","
+                + name + ","
+                + status + ","
+                + specification;
     }
 }

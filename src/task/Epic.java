@@ -5,24 +5,25 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class Epic extends Task {
-    HashMap<Integer,Subtask> subtasks = new HashMap<>();
+    HashMap<Integer, Subtask> subtasks = new HashMap<>();
+
     public Epic(Integer id, String name, String specification, TaskStatus status) {
         super(id, name, specification, status);
     }
 
     public void addSubtask(Subtask subtask) {
-        subtasks.put(subtask.getId(),subtask);
+        subtasks.put(subtask.getId(), subtask);
     }
 
     public void updateStatus() {
         if (!subtasks.isEmpty()) {
-            ArrayList<Subtask>subtasksList = new ArrayList<>();
+            ArrayList<Subtask> subtasksList = new ArrayList<>();
             for (Subtask subtask : subtasks.values()) {
                 subtasksList.add(subtask);
             }
-            TaskStatus status=subtasksList.get(0).status;
-             for (Subtask subtask:subtasksList) {
-                 if (status.equals(subtask.status)) {
+            TaskStatus status = subtasksList.get(0).status;
+            for (Subtask subtask : subtasksList) {
+                if (status.equals(subtask.status)) {
                     this.status = status;
                 } else {
                     this.status = TaskStatus.IS_PROGRESS;
@@ -38,6 +39,10 @@ public class Epic extends Task {
         return subtasks;
     }
 
+    @Override
+    public TaskType getType() {
+        return TaskType.EPIC;
+    }
 
 
     @Override
@@ -56,15 +61,8 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Epic{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", specification='" + specification + '\'' +
-                ", status='" + status + '\'' +
-                ", subtasks=" + subtasks +
-                '}';
+        return id + "," + getType() + "," + name + "," + status + "," + specification;
     }
 }
-
 
 
