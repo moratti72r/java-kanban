@@ -35,61 +35,79 @@ public class InMemoryTaskManager implements Manager {
     @Override
     public void createTask(Task task) {
         idTask++;
-        task.setId(idTask);
-        mapTasks.put(task.getId(), task);
-    }
-
-    @Override
-    public void createSubtask(Subtask subtask) {
-        idTask++;
-        subtask.setId(idTask);
-        if (mapEpics.containsKey(subtask.getEpicId())) {
-            mapEpics.get(subtask.getEpicId()).addSubtask(subtask);
-            mapEpics.get(subtask.getEpicId()).updateStatus();
-            mapSubtasks.put(subtask.getId(), subtask);
+        if (task instanceof Subtask) {
+            task.setId(idTask);
+            if (mapEpics.containsKey(((Subtask) task).getEpicId())) {
+                mapEpics.get(((Subtask) task).getEpicId()).addSubtask((Subtask) task);
+                mapEpics.get(((Subtask) task).getEpicId()).updateStatus();
+                mapSubtasks.put(task.getId(), (Subtask) task);
+            }
+        } else if (task instanceof Epic) {
+            task.setId(idTask);
+            mapEpics.put(task.getId(), (Epic) task);
+        } else {
+            task.setId(idTask);
+            mapTasks.put(task.getId(), task);
         }
     }
 
     @Override
-    public void createEpic(Epic epic) {
-        idTask++;
-        epic.setId(idTask);
-        mapEpics.put(epic.getId(), epic);
-    }
-
-    @Override
     public void removeTasks() {
+        for (Integer id : mapTasks.keySet()) {
+            for (Task task : history.getHistory()) {
+                if (id.equals(task.getId())) {
+                    history.remove(id);
+                }
+            }
+        }
         mapTasks.clear();
     }
 
     @Override
     public void removeSubtasks() {
+        for (Integer id : mapSubtasks.keySet()) {
+            for (Task task : history.getHistory()) {
+                if (id.equals(task.getId())) {
+                    history.remove(id);
+                }
+            }
+        }
+        mapSubtasks.clear();
         for (Epic epic : mapEpics.values()) {
             epic.getSubtasks().clear();
             epic.updateStatus();
         }
-        mapSubtasks.clear();
     }
 
     @Override
     public void removeEpic() {
+        removeSubtasks();
+        for (Integer id : mapEpics.keySet()) {
+            for (Task task : history.getHistory()) {
+                if (id.equals(task.getId())) {
+                    history.remove(id);
+                }
+            }
+        }
         mapEpics.clear();
-        mapSubtasks.clear();
     }
 
     @Override
     public void removeById(Integer id) {
         if (mapTasks.containsKey(id)) {
             mapTasks.remove(id);
+            history.remove(id);
         } else if (mapSubtasks.containsKey(id)) {
             mapEpics.get(mapSubtasks.get(id).getEpicId()).getSubtasks().remove(id);
             mapEpics.get(mapSubtasks.get(id).getEpicId()).updateStatus();
             mapSubtasks.remove(id);
+            history.remove(id);
         } else if (mapEpics.containsKey(id)) {
             for (Integer idSubtask : mapEpics.get(id).getSubtasks().keySet()) {
                 mapSubtasks.remove(idSubtask);
             }
             mapEpics.remove(id);
+            history.remove(id);
         }
     }
 
@@ -111,28 +129,25 @@ public class InMemoryTaskManager implements Manager {
 
     @Override
     public void upDateTask(Task task) {
-        if (mapTasks.containsKey(task.getId())) {
-            mapTasks.put(task.getId(), task);
-        }
-    }
-
-    @Override
-    public void upDateSubtask(Subtask subtask) {
-        if (mapSubtasks.containsKey(subtask.getId())) {
-            mapSubtasks.put(subtask.getId(), subtask);
-            if (mapEpics.containsKey(subtask.getEpicId())) {
-                mapEpics.get(subtask.getEpicId()).getSubtasks().put(subtask.getId(), subtask);
-                mapEpics.get(subtask.getEpicId()).updateStatus();
+        if (task instanceof Subtask) {
+            if (mapSubtasks.containsKey(task.getId())) {
+                mapSubtasks.put(task.getId(), (Subtask) task);
+                if (mapEpics.containsKey(((Subtask) task).getEpicId())) {
+                    mapEpics.get(((Subtask) task).getEpicId()).getSubtasks().put(task.getId(), (Subtask) task);
+                    mapEpics.get(((Subtask) task).getEpicId()).updateStatus();
+                }
+            }
+        } else if (task instanceof Epic) {
+            if (mapEpics.containsKey(task.getId())) {
+                mapEpics.put(task.getId(), (Epic) task);
+            }
+        } else {
+            if (mapTasks.containsKey(task.getId())) {
+                mapTasks.put(task.getId(), task);
             }
         }
     }
 
-    @Override
-    public void upDateEpic(Epic epic) {
-        if (mapEpics.containsKey(epic.getId())) {
-            mapEpics.put(epic.getId(), epic);
-        }
-    }
 
     @Override
     public HistoryManager getHistory() {

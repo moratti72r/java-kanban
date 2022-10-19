@@ -28,6 +28,18 @@ public class Task {
         return TaskType.TASK;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getSpecification() {
+        return specification;
+    }
+
+    public TaskStatus getStatus() {
+        return status;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -44,12 +56,14 @@ public class Task {
         return Objects.hash(id, name, specification, status);
     }
 
+
     @Override
     public String toString() {
-        return id + ","
-                + getType() + ","
-                + name + ","
-                + status + ","
-                + specification;
+        return "Task{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", specification='" + specification + '\'' +
+                ", status=" + status +
+                '}';
     }
 }

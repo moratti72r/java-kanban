@@ -15,10 +15,6 @@ public interface Manager {
     public HashMap<Integer, Epic> getMapEpics();
     public void createTask(Task task);
 
-    public void createSubtask(Subtask subtask) ;
-
-    public void createEpic(Epic epic) ;
-
     public void removeTasks() ;
 
     public void removeSubtasks();
@@ -31,9 +27,6 @@ public interface Manager {
 
     public void upDateTask(Task task) ;
 
-    public void upDateSubtask(Subtask subtask) ;
-
-    public void upDateEpic (Epic epic);
 
     public HistoryManager getHistory();
 
