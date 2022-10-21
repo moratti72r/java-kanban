@@ -5,12 +5,13 @@ import historymanager.InMemoryHistoryManager;
 import task.Epic;
 import task.Subtask;
 import task.Task;
+import task.TaskType;
 
 import java.util.HashMap;
 
 
 public class InMemoryTaskManager implements Manager {
-    private Integer idTask = 0;
+    protected Integer idTask = 0;
     private final HistoryManager history = new InMemoryHistoryManager();
 
     private final HashMap<Integer, Task> mapTasks = new HashMap<>();
@@ -35,17 +36,17 @@ public class InMemoryTaskManager implements Manager {
     @Override
     public void createTask(Task task) {
         idTask++;
-        if (task instanceof Subtask) {
+        if (task instanceof Epic) {
+            task.setId(idTask);
+            mapEpics.put(task.getId(), (Epic) task);
+        }else if (task.getType() == TaskType.SUBTASK) {
             task.setId(idTask);
             if (mapEpics.containsKey(((Subtask) task).getEpicId())) {
                 mapEpics.get(((Subtask) task).getEpicId()).addSubtask((Subtask) task);
                 mapEpics.get(((Subtask) task).getEpicId()).updateStatus();
                 mapSubtasks.put(task.getId(), (Subtask) task);
             }
-        } else if (task instanceof Epic) {
-            task.setId(idTask);
-            mapEpics.put(task.getId(), (Epic) task);
-        } else {
+        }else {
             task.setId(idTask);
             mapTasks.put(task.getId(), task);
         }
@@ -146,6 +147,10 @@ public class InMemoryTaskManager implements Manager {
                 mapTasks.put(task.getId(), task);
             }
         }
+    }
+
+    public void setIdTask(Integer id){
+        idTask=id;
     }
 
 

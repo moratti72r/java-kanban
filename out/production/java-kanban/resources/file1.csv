@@ -1,13 +1,13 @@
 id,type,name,status,description,epic
-1,EPIC,Что то 1,IS_PROGRESS,Что то сделать 1
-2,SUBTASK,Что то 2,NEW,Что то сделать 2,1
-3,SUBTASK,Что то 3,DONE,Что то сделать 3,1
-4,EPIC,Что то 4,IS_PROGRESS,Что то сделать 4
-5,SUBTASK,Что то 5,DONE,Что то сделать 5,4
 6,TASK,Что то 6,DONE,Что то сделать 6
 7,TASK,Что то 7,DONE,Что то сделать 7
 8,TASK,Что то 8,DONE,Что то сделать 8
 9,TASK,Что то 9,DONE,Что то сделать 9
+1,EPIC,Что то 1,IS_PROGRESS,Что то сделать 1
+4,EPIC,Что то 4,IS_PROGRESS,Что то сделать 4
+2,SUBTASK,Что то 2,NEW,Что то сделать 2,1
+3,SUBTASK,Что то 3,DONE,Что то сделать 3,1
+5,SUBTASK,Что то 5,DONE,Что то сделать 5,4
 10,SUBTASK,Что то 10,NEW,Что то сделать 10,4
 11,SUBTASK,Что то 11,DONE,Что то сделать 11,4
 

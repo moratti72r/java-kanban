@@ -8,6 +8,7 @@ import static task.TaskType.*;
 public class CsvTaskSerializer implements TaskSerializer {
 
     private final InMemoryTaskManager tasksManager;
+    private Integer maxId = 0;
 
     public CsvTaskSerializer(InMemoryTaskManager tasksManager) {
         this.tasksManager = tasksManager;
@@ -35,6 +36,10 @@ public class CsvTaskSerializer implements TaskSerializer {
         } else if (taskType == TASK) {
             task = new Task(id, name, specification, taskStatus);
         }
+        tasksManager.setIdTask(task.getId() - 1);
+        tasksManager.createTask(task);
+        maxId = maxId < task.getId() ? task.id : maxId;
+        tasksManager.setIdTask(maxId);
         return task;
     }
 
@@ -45,6 +50,11 @@ public class CsvTaskSerializer implements TaskSerializer {
             value = value + "," + ((Subtask) task).getEpicId();
         }
         return value;
+    }
+
+    @Override
+    public String getHeadLine() {
+        return "id,type,name,status,description,epic\n";
     }
 
 }
