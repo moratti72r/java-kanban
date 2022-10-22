@@ -4,10 +4,19 @@ import java.util.Objects;
 
 public class Subtask extends Task {
     private Integer epicId;
+    Epic epic;
 
-    public Subtask(Integer id, String name, String specification, TaskStatus status, Epic epic) {
+    public Subtask(Integer id, String name, String specification, TaskStatus status, Integer epicId) {
         super(id, name, specification, status);
-        this.epicId = epic.getId();
+        this.epicId = epicId;
+    }
+
+    public void setEpic(Epic epic){
+        this.epic = epic;
+    }
+
+    public Epic getEpic(){
+        return epic;
     }
 
     public Integer getEpicId() {

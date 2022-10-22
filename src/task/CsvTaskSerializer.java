@@ -1,18 +1,13 @@
 package task;
 
-import taskmanager.InMemoryTaskManager;
 
 
 import static task.TaskType.*;
 
 public class CsvTaskSerializer implements TaskSerializer {
 
-    private final InMemoryTaskManager tasksManager;
     private Integer maxId = 0;
 
-    public CsvTaskSerializer(InMemoryTaskManager tasksManager) {
-        this.tasksManager = tasksManager;
-    }
 
     @Override
     public Task deserialize(String value) {
@@ -30,16 +25,13 @@ public class CsvTaskSerializer implements TaskSerializer {
 
 
         if (taskType == EPIC) {
-            task = new Epic(id, name, specification, taskStatus);
+            task = new Epic(id-1, name, specification, taskStatus);
         } else if (taskType == SUBTASK) {
-            task = new Subtask(id, name, specification, taskStatus, tasksManager.getMapEpics().get(idEpic));
+            task = new Subtask(id-1, name, specification, taskStatus, idEpic);
         } else if (taskType == TASK) {
-            task = new Task(id, name, specification, taskStatus);
+            task = new Task(id-1, name, specification, taskStatus);
         }
-        tasksManager.setIdTask(task.getId() - 1);
-        tasksManager.createTask(task);
-        maxId = maxId < task.getId() ? task.id : maxId;
-        tasksManager.setIdTask(maxId);
+        maxId = maxId < task.getId() ? id : maxId;
         return task;
     }
 
@@ -55,6 +47,11 @@ public class CsvTaskSerializer implements TaskSerializer {
     @Override
     public String getHeadLine() {
         return "id,type,name,status,description,epic\n";
+    }
+
+    @Override
+    public Integer getMaxId(){
+        return maxId;
     }
 
 }

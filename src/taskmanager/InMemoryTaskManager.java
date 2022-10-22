@@ -36,7 +36,7 @@ public class InMemoryTaskManager implements Manager {
     @Override
     public void createTask(Task task) {
         idTask++;
-        if (task instanceof Epic) {
+        if (task.getType() == TaskType.EPIC) {
             task.setId(idTask);
             mapEpics.put(task.getId(), (Epic) task);
         }else if (task.getType() == TaskType.SUBTASK) {
@@ -44,6 +44,7 @@ public class InMemoryTaskManager implements Manager {
             if (mapEpics.containsKey(((Subtask) task).getEpicId())) {
                 mapEpics.get(((Subtask) task).getEpicId()).addSubtask((Subtask) task);
                 mapEpics.get(((Subtask) task).getEpicId()).updateStatus();
+                ((Subtask) task).setEpic(mapEpics.get(((Subtask) task).getEpicId()));
                 mapSubtasks.put(task.getId(), (Subtask) task);
             }
         }else {
