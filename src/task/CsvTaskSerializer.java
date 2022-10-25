@@ -2,42 +2,54 @@ package task;
 
 
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import static task.TaskType.*;
 
 public class CsvTaskSerializer implements TaskSerializer {
 
-    private Integer maxId = 0;
-
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm");
 
     @Override
     public Task deserialize(String value) {
         String[] split = value.split(",");
         Integer id = Integer.parseInt(split[0]);
-        String type = split[1];
+        TaskType taskType = TaskType.valueOf(split[1]);
         String name = split[2];
-        String status = split[3];
+        TaskStatus taskStatus = TaskStatus.valueOf(split[3]);
         String specification = split[4];
-        Integer idEpic = split.length > 5 ? Integer.parseInt(split[5]) : null;
-        Task task = null;
 
-        TaskStatus taskStatus = TaskStatus.valueOf(status);
-        TaskType taskType = TaskType.valueOf(type);
+        LocalDateTime startTime = split.length > 5 ? LocalDateTime.parse(split[5],formatter) : LocalDateTime.MAX;
+        LocalDateTime endTime = split.length > 5 ? LocalDateTime.parse(split[6],formatter) : LocalDateTime.MAX;
+        Duration duration = split.length > 5 ? Duration.between(startTime,endTime) : null;
+        Integer idEpic = split.length > 7 ? Integer.parseInt(split[7]) : null;
+
+        Task task = null;
 
 
         if (taskType == EPIC) {
-            task = new Epic(id-1, name, specification, taskStatus);
+            task = new Epic(id, name, specification);
         } else if (taskType == SUBTASK) {
-            task = new Subtask(id-1, name, specification, taskStatus, idEpic);
+            task = new Subtask(id, name, specification, taskStatus, startTime, duration, idEpic);
         } else if (taskType == TASK) {
-            task = new Task(id-1, name, specification, taskStatus);
+            task = new Task(id, name, specification, taskStatus,startTime,duration);
         }
-        maxId = maxId < task.getId() ? id : maxId;
         return task;
     }
 
     @Override
     public String serialize(Task task) {
-        String value = task.getId() + "," + task.getType() + "," + task.getName() + "," + task.getStatus() + "," + task.getSpecification();
+        String value = task.getId() + ","
+                + task.getType() + ","
+                + task.getName() + ","
+                + task.getStatus() + ","
+                + task.getSpecification();
+
+        if (task.getStartTime()!=LocalDateTime.MAX){
+            value = value + "," + task.getStartTime().format(formatter) + "," + task.getEndTime().format(formatter);
+        }
         if (task instanceof Subtask) {
             value = value + "," + ((Subtask) task).getEpicId();
         }
@@ -46,12 +58,8 @@ public class CsvTaskSerializer implements TaskSerializer {
 
     @Override
     public String getHeadLine() {
-        return "id,type,name,status,description,epic\n";
+        return "id,type,name,status,description,start,end,epic\n";
     }
 
-    @Override
-    public Integer getMaxId(){
-        return maxId;
-    }
 
 }

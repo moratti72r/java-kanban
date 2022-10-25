@@ -5,8 +5,9 @@ import task.Epic;
 import task.Subtask;
 import task.Task;
 import java.util.HashMap;
+import java.util.Set;
 
-public interface Manager {
+public interface TaskManager {
 
     public HashMap<Integer, Task> getMapTasks() ;
 
@@ -29,6 +30,8 @@ public interface Manager {
 
 
     public HistoryManager getHistory();
+
+    public Set<Task> getPrioritizedTasks();
 
     public HashMap<Integer, Subtask> getSubtasksFromEpic(Epic epic);
 

@@ -6,17 +6,16 @@ import task.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class FileBackedTasksManager extends InMemoryTaskManager {
+public class FileBackedTasksTaskManager extends InMemoryTaskTaskManager {
 
     private final String textFile;
 
     private final TaskSerializer taskSerializer = new CsvTaskSerializer();
 
 
-    public FileBackedTasksManager(String textFile) throws IOException {
+    public FileBackedTasksTaskManager(String textFile) throws IOException {
         this.textFile = textFile;
 
         ArrayList<String> allTasks = new ArrayList<>();
@@ -35,14 +34,17 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
+
     public void separate(ArrayList<String> allTasks) {
         if (allTasks.get(allTasks.size() - 2).isBlank()) {
+            Integer idMax = 0;
             for (int i = 1; i < allTasks.size() - 2; i++) {
                 Task task = taskSerializer.deserialize(allTasks.get(i));
-                setIdTask(task.getId());
+                idMax = idMax < task.getId() ? task.getId() : idMax;
+                setIdTaskGenerator(task.getId() - 1);
                 super.createTask(task);
             }
-            setIdTask(taskSerializer.getMaxId());
+            setIdTaskGenerator(idMax);
 
             String historyLine = allTasks.get(allTasks.size() - 1);
 
@@ -102,6 +104,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return history;
     }
 
+    public void setIdTaskGenerator(Integer id) {
+        idTaskGenerator = id;
+    }
+
+    public Integer getIdTaskGenerator() {
+        return idTaskGenerator;
+    }
 
     @Override
     public void createTask(Task task) {
@@ -146,65 +155,4 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         super.upDateTask(task);
         save();
     }
-
-    public static void main(String[] args) throws IOException {
-
-        InMemoryTaskManager manager = new FileBackedTasksManager("src\\resources\\file1.csv");
-
-//        Epic epic1 = new Epic(0, "Что то 1", "Что то сделать 1", TaskStatus.NEW); //id1
-//        manager.createTask(epic1);
-//        manager.createTask(new Subtask(0, "Что то 2", "Что то сделать 2", TaskStatus.NEW, 1));
-//        manager.createTask(new Subtask(0, "Что то 3", "Что то сделать 3", TaskStatus.DONE, 1));
-//
-//        Epic epic2 = new Epic(0, "Что то 4", "Что то сделать 4", TaskStatus.NEW);
-//        manager.createTask(epic2);
-//        manager.createTask(new Subtask(0, "Что то 5", "Что то сделать 5", TaskStatus.DONE, 4));
-//        manager.createTask(new Task(0, "Что то 6", "Что то сделать 6", TaskStatus.DONE));
-//        manager.createTask(new Task(0, "Что то 7", "Что то сделать 7", TaskStatus.DONE));
-//        manager.createTask(new Task(0, "Что то 8", "Что то сделать 8", TaskStatus.DONE));
-//        manager.createTask(new Task(0, "Что то 9", "Что то сделать 9", TaskStatus.DONE));
-//        manager.createTask(new Subtask(0, "Что то 10", "Что то сделать 10", TaskStatus.NEW, 4));
-//        manager.createTask(new Subtask(0, "Что то 11", "Что то сделать 11", TaskStatus.DONE, 4));
-//
-//        System.out.println(manager.getMapEpics());
-//        System.out.println(manager.getMapSubtasks());
-//        System.out.println(manager.getMapTasks());
-//
-//        manager.getById(1);
-//        System.out.println(manager.getHistory().getHistory());
-//
-//        manager.getById(2);
-//        manager.getById(3);
-//        System.out.println(manager.getHistory().getHistory());
-//        manager.getById(4);
-//        manager.getById(5);
-//        manager.getById(6);
-//        manager.getById(7);
-//        manager.getById(8);
-//        manager.getById(9);
-//        manager.getById(10);
-//        manager.getById(5); //11 = 5
-//        manager.getById(11);
-//
-//        System.out.println(manager.getHistory().getHistory());
-
-        System.out.println(manager.getHistory().getHistory());
-        System.out.println(manager.getMapTasks());
-        System.out.println(manager.getMapSubtasks());
-        System.out.println(manager.getMapEpics());
-
-        manager.createTask(new Task(0, "Что то 9", "Что то сделать 9", TaskStatus.DONE));
-        System.out.println(manager.getMapTasks());
-        manager.createTask(new Task(0, "Что то 10", "Что то сделать 9", TaskStatus.DONE));
-
-        manager.removeById(3);
-        System.out.println(manager.getMapSubtasks());
-        System.out.println(manager.getHistory().getHistory());
-
-        manager.removeSubtasks();
-        System.out.println(manager.getMapSubtasks());
-        System.out.println(manager.getHistory().getHistory());
-
-    }
-
 }

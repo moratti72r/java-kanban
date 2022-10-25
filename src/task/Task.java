@@ -1,5 +1,7 @@
 package task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Task {
@@ -7,14 +9,29 @@ public class Task {
     protected String name;
     protected String specification;
     protected TaskStatus status;
+    protected LocalDateTime startTime;
+    protected Duration duration;
 
+    protected Task() {
+    }
 
-    public Task(Integer id, String name, String specification, TaskStatus status) {
+    public Task(Integer id, String name, String specification, TaskStatus status, LocalDateTime startTime, Duration duration ) {
         this.id = id;
         this.name = name;
         this.specification = specification;
         this.status = status;
+        this.startTime = startTime;
+        this.duration = duration;
     }
+
+    public Task(String name, String specification, TaskStatus status, LocalDateTime startTime, Duration duration) {
+        this.name = name;
+        this.specification = specification;
+        this.status = status;
+        this.startTime = startTime;
+        this.duration = duration;
+    }
+
 
     public Integer getId() {
         return id;
@@ -36,6 +53,14 @@ public class Task {
         return specification;
     }
 
+    public LocalDateTime getEndTime(){
+        return startTime.plus(duration);
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
     public TaskStatus getStatus() {
         return status;
     }
@@ -48,14 +73,14 @@ public class Task {
         return Objects.equals(id, task.id)
                 && Objects.equals(name, task.name)
                 && Objects.equals(specification, task.specification)
-                && Objects.equals(status, task.status);
+                && status == task.status && Objects.equals(startTime, task.startTime)
+                && Objects.equals(duration, task.duration);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, specification, status);
+        return Objects.hash(id, name, specification, status, startTime, duration);
     }
-
 
     @Override
     public String toString() {
@@ -64,6 +89,8 @@ public class Task {
                 ", name='" + name + '\'' +
                 ", specification='" + specification + '\'' +
                 ", status=" + status +
+                ", startTime=" + startTime +
+                ", duration=" + duration +
                 '}';
     }
 }

@@ -1,15 +1,14 @@
 package taskmanager;
 
 import historymanager.HistoryManager;
-import historymanager.InMemoryHistoryManager;
 
 public class Managers {
-    private static final Manager inMemoryTaskManager = new InMemoryTaskManager();
-    private static final HistoryManager historyManager = inMemoryTaskManager.getHistory();
+    private static final TaskManager IN_MEMORY_TASK_TASK_MANAGER = new InMemoryTaskTaskManager();
+    private static final HistoryManager historyManager = IN_MEMORY_TASK_TASK_MANAGER.getHistory();
 
 
-    public static Manager getDefault(){
-        return inMemoryTaskManager;
+    public static TaskManager getDefault(){
+        return IN_MEMORY_TASK_TASK_MANAGER;
     }
 
     public static HistoryManager getDefaultHistory(){ return historyManager; }

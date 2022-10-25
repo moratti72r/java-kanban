@@ -1,26 +1,62 @@
 package task;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
 public class Epic extends Task {
     HashMap<Integer, Subtask> subtasks = new HashMap<>();
+    LocalDateTime endTime;
 
-    public Epic(Integer id, String name, String specification, TaskStatus status) {
-        super(id, name, specification, status);
+
+    public Epic(Integer id, String name, String specification) {
+        super();
+        this.id = id;
+        this.name = name;
+        this.specification = specification;
+
+        updateStatus();
+        calculateTime();
+    }
+
+    public Epic(String name, String specification) {
+        super();
+        this.name = name;
+        this.specification = specification;
+
+        updateStatus();
+        calculateTime();
+    }
+
+    public void calculateTime() {
+        if (!subtasks.isEmpty()) {
+            ArrayList<Subtask> subtasksList = new ArrayList<>(subtasks.values());
+            startTime = subtasksList.get(0).getStartTime();
+            endTime = subtasksList.get(0).getEndTime();
+            for (Subtask subtask : subtasksList) {
+                if (startTime.isAfter(subtask.getStartTime())) {
+                    startTime = subtask.getStartTime();
+                }
+                if (endTime.isBefore(subtask.getEndTime())){
+                    endTime = subtask.getEndTime();
+                }
+            }
+        }else {
+            this.startTime = LocalDateTime.MAX;
+            this.endTime = LocalDateTime.MAX;
+        }
     }
 
     public void addSubtask(Subtask subtask) {
         subtasks.put(subtask.getId(), subtask);
+        updateStatus();
+        calculateTime();
     }
 
     public void updateStatus() {
         if (!subtasks.isEmpty()) {
-            ArrayList<Subtask> subtasksList = new ArrayList<>();
-            for (Subtask subtask : subtasks.values()) {
-                subtasksList.add(subtask);
-            }
+            ArrayList<Subtask> subtasksList = new ArrayList<>(subtasks.values());
             TaskStatus status = subtasksList.get(0).status;
             for (Subtask subtask : subtasksList) {
                 if (status.equals(subtask.status)) {
@@ -40,6 +76,11 @@ public class Epic extends Task {
     }
 
     @Override
+    public LocalDateTime getEndTime(){
+        return endTime;
+    }
+
+    @Override
     public TaskType getType() {
         return TaskType.EPIC;
     }
@@ -51,19 +92,20 @@ public class Epic extends Task {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Epic epic = (Epic) o;
-        return Objects.equals(subtasks, epic.subtasks);
+        return Objects.equals(subtasks, epic.subtasks) && Objects.equals(endTime, epic.endTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), subtasks);
+        return Objects.hash(super.hashCode(), subtasks, endTime);
     }
 
     @Override
     public String toString() {
-        return "Epic{" +
-                "subtasks=" + subtasks +
-                "} " + super.toString();
+        return "Epic{" + super.toString()+
+                "subtasks=" + subtasks.keySet() +
+                ", endTime=" + endTime +
+                "} " ;
     }
 }
 
