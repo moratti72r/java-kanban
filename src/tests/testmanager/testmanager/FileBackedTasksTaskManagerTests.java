@@ -8,6 +8,7 @@ import task.Subtask;
 import task.Task;
 import task.TaskStatus;
 import taskmanager.FileBackedTasksTaskManager;
+import taskmanager.InMemoryTaskTaskManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +17,9 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileBackedTasksTaskManagerTests extends TaskManagerTest <FileBackedTasksTaskManager> {
+class FileBackedTasksTaskManagerTests extends TaskManagerTest <FileBackedTasksTaskManager>
+
+ {
 
     @BeforeEach
     public void newFileBackedTasksTaskManager() throws IOException {

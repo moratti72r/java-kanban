@@ -6,7 +6,10 @@ import task.Epic;
 import task.Subtask;
 import task.Task;
 import task.TaskType;
+
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class InMemoryTaskTaskManager implements TaskManager {
@@ -16,6 +19,8 @@ public class InMemoryTaskTaskManager implements TaskManager {
     protected final HashMap<Integer, Task> mapTasks = new HashMap<>();
     protected final HashMap<Integer, Subtask> mapSubtasks = new HashMap<>();
     protected final HashMap<Integer, Epic> mapEpics = new HashMap<>();
+
+    private HashSet<Task> allTasks = new HashSet<>();
 
     @Override
     public HashMap<Integer, Task> getMapTasks() {
@@ -34,40 +39,35 @@ public class InMemoryTaskTaskManager implements TaskManager {
 
     @Override
     public void createTask(Task task) {
-        try {
-            if (getPrioritizedTasks().stream().anyMatch((Task task1) -> task1.getStartTime().equals(task.getStartTime()))){
-                throw new Exception ();
+            if (allTasks.stream().anyMatch((Task task1) -> intersectionOfTimes (task,task1))){
+                throw new RuntimeException ("Данное время уже занято");
             }
+            idTaskGenerator++;
             if (task.getType() == TaskType.EPIC) {
-                idTaskGenerator++;
                 task.setId(idTaskGenerator);
                 mapEpics.put(task.getId(), (Epic) task);
             } else if (task.getType() == TaskType.SUBTASK) {
                 if (mapEpics.containsKey(((Subtask) task).getEpicId())) {
-                    idTaskGenerator++;
                     task.setId(idTaskGenerator);
                     mapEpics.get(((Subtask) task).getEpicId()).addSubtask((Subtask) task);
                     mapSubtasks.put(task.getId(), (Subtask) task);
-                }else throw new EmptyStackException ();
+                }else throw new RuntimeException ("Эпик с таким id отсутствует");;
             } else {
-                idTaskGenerator++;
                 task.setId(idTaskGenerator);
                 mapTasks.put(task.getId(), task);
             }
-        } catch (EmptyStackException e) {
-            throw new RuntimeException("Эпик с таким id отсутствует");
-        } catch (Exception e){
-            throw new RuntimeException("Данное время уже занято");
-        }
+            allTasks.add(task);
     }
 
+    public boolean intersectionOfTimes (Task task1, Task task2){
+        return (task1.getStartTime().isAfter(task2.getStartTime())) && (task1.getStartTime().isBefore(task2.getEndTime()))
+                || task1.getStartTime().equals(task2.getStartTime())
+                || task1.getStartTime().equals(task2.getEndTime())
+                || task1.getEndTime().equals(task2.getStartTime());
+    }
 
     @Override
     public void removeTasks() {
-        try {
-            if (mapTasks.isEmpty()){
-                throw new Exception ();
-            }
             for (Integer id : mapTasks.keySet()) {
                 for (Task task : history.getHistory()) {
                     if (id.equals(task.getId())) {
@@ -76,17 +76,10 @@ public class InMemoryTaskTaskManager implements TaskManager {
                 }
             }
             mapTasks.clear();
-        }catch (Exception e){
-            throw new RuntimeException("Список задач уже пуст");
-        }
     }
 
     @Override
     public void removeSubtasks() {
-        try {
-            if (mapTasks.isEmpty()){
-                throw new Exception ();
-            }
         for (Integer id : mapSubtasks.keySet()) {
             for (Task task : history.getHistory()) {
                 if (id.equals(task.getId())) {
@@ -99,17 +92,10 @@ public class InMemoryTaskTaskManager implements TaskManager {
             epic.getSubtasks().clear();
             epic.updateStatus();
         }
-        }catch (Exception e){
-            throw new RuntimeException("Список задач уже пуст");
-        }
     }
 
     @Override
     public void removeEpic() {
-        try {
-            if (mapTasks.isEmpty()){
-                throw new Exception ();
-            }
         removeSubtasks();
         for (Integer id : mapEpics.keySet()) {
             for (Task task : history.getHistory()) {
@@ -119,14 +105,10 @@ public class InMemoryTaskTaskManager implements TaskManager {
             }
         }
         mapEpics.clear();
-        }catch (Exception e){
-            throw new RuntimeException("Список задач уже пуст");
-        }
     }
 
     @Override
     public void removeById(Integer id) {
-        try {
             if (mapTasks.containsKey(id)) {
                 mapTasks.remove(id);
                 history.remove(id);
@@ -141,15 +123,11 @@ public class InMemoryTaskTaskManager implements TaskManager {
                 }
                 mapEpics.remove(id);
                 history.remove(id);
-            } else throw new Exception();
-        } catch (Exception e) {
-            throw new RuntimeException("Задача под введенным id отсутствует");
-        }
+            } else throw new RuntimeException("Задача под введенным id отсутствует");
     }
 
     @Override
     public Task getById(Integer id) {
-        try {
             if (mapTasks.containsKey(id)) {
                 history.add(mapTasks.get(id));
                 return mapTasks.get(id);
@@ -159,51 +137,59 @@ public class InMemoryTaskTaskManager implements TaskManager {
             } else if (mapEpics.containsKey(id)) {
                 history.add(mapEpics.get(id));
                 return mapEpics.get(id);
-            } else throw new Exception();
-        } catch (Exception e) {
-            throw new RuntimeException("Задача под введенным id отсутствует");
-        }
+            } else throw new RuntimeException("Задача под введенным id отсутствует");
     }
 
     @Override
     public void upDateTask(Task task) {
-        try {
-            if (getPrioritizedTasks().stream().anyMatch((Task task1) -> task1.getStartTime().equals(task.getStartTime()))) {
-                throw new ExceptionInInitializerError();
-            }
-            if (task.getType()==TaskType.SUBTASK) {
-                if (mapSubtasks.containsKey(task.getId())) {
+            if (task.getType()==TaskType.SUBTASK && mapSubtasks.containsKey(task.getId())) {
+                    if (allTasks.stream()
+                            .filter((Task task1) -> !task1.getId().equals(task.getId()))
+                            .filter((Task task1) -> !task1.getId().equals(((Subtask)task).getEpicId()))
+                            .anyMatch((Task task1) -> intersectionOfTimes (task,task1))) {
+                        throw new RuntimeException("Данное время уже занято");
+                    }
                     mapSubtasks.put(task.getId(), (Subtask) task);
                     if (mapEpics.containsKey(((Subtask) task).getEpicId())) {
                         mapEpics.get(((Subtask) task).getEpicId()).addSubtask ((Subtask) task);
-                    }else throw new IllegalArgumentException ();
-                }else throw new Exception ();
-            } else if (task.getType()==TaskType.EPIC) {
-                if (mapEpics.containsKey(task.getId())) {
-                    ((Epic) task).updateStatus();
+                    }else throw new RuntimeException("Эпик с таким id отсутствует");
+            } else if (task.getType()==TaskType.EPIC && mapEpics.containsKey(task.getId())) {
+                    allTasks.stream()
+                            .filter((Task task1) -> ((Subtask)task1).getEpicId().equals(task.getId()))
+                            .map((Task task1) ->  (Subtask)task1)
+                            .forEach(((Epic)task)::addSubtask);
                     mapEpics.put(task.getId(), (Epic) task);
-                }else throw new Exception ();
-            } else if (task.getType()==TaskType.TASK) {
-                if (mapTasks.containsKey(task.getId())) {
+            } else if (task.getType()==TaskType.TASK && mapTasks.containsKey(task.getId())) {
+                if (allTasks.stream()
+                        .filter((Task task1) -> !task1.getId().equals(task.getId()))
+                        .anyMatch((Task task1) -> intersectionOfTimes (task,task1))) {
+                    throw new RuntimeException("Данное время уже занято");
+                }
                     mapTasks.put(task.getId(), task);
-                }else throw new Exception ();
-            } else throw new Exception ();
-        }catch (ExceptionInInitializerError e){
-            throw new RuntimeException("Данное время уже занято");
-        }catch (IllegalArgumentException e) {
-            throw new RuntimeException("Эпик с таким id отсутствует");
-        }catch (Exception e) {
-            throw new RuntimeException("Задача с таким id отсутствует");
-        }
+            }else {throw new RuntimeException("Задача с таким id отсутствует");}
+
+        allTasks =(HashSet<Task>) allTasks.stream().filter((Task task1) -> !task1.getId().equals(task.getId()))
+                .collect(Collectors.toSet());
+        allTasks.add(task);
+
+
+
     }
 
     @Override
     public Set<Task> getPrioritizedTasks() {
-        Set<Task> treeSet = new TreeSet<>(Comparator.comparing(Task::getStartTime).thenComparing(Task::getId));
-        treeSet.addAll(mapTasks.values());
-        treeSet.addAll(mapSubtasks.values());
-        treeSet.addAll(mapEpics.values());
-        return treeSet;
+        TreeSet <Task> tasks = new TreeSet<Task> (Comparator.comparing(Task::getStartTime).thenComparing(Task::getId));
+        tasks.addAll(allTasks);
+        return  tasks;
+    }
+
+    public boolean prioritizedTasksIsIntersectionOfTimes (){
+        ArrayList<Task> tasksList = new ArrayList<>(allTasks);
+        for (int i=0;i<tasksList.size()-1;i++){
+           if (intersectionOfTimes(tasksList.get(i),tasksList.get(i+1))){
+               return true;
+           }
+        } return false;
     }
 
     @Override

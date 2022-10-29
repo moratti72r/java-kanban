@@ -1,6 +1,7 @@
 package testmanager;
 
 
+import org.junit.jupiter.api.Test;
 import taskmanager.TaskManager;
 
 abstract class TaskManagerTest <T extends TaskManager> {
@@ -8,15 +9,36 @@ abstract class TaskManagerTest <T extends TaskManager> {
     protected T taskManager;
 
 
-    void getTaskFromEmptyMap() {}
+    @Test
+    void catchExceptionWhenGetTaskByIdFromEmptyMap(){}
 
-    void removeTaskFromEmptyMap(){}
+    @Test
+    void catchExceptionWhenRemoveTaskByIdFromEmptyMap() {}
 
-    void removeTasksFromEmptyMap() {}
-    void upDateTaskFromEmptyMap(){}
+    @Test
+    void catchExceptionWhenUpDateTaskFromEmptyMapOrIdNotExist() {}
 
-    void putTaskWithoutIdToEmptyMap(){}
-    void upDateStatusAndTimeWith3Subtasks(){}
-    void AddAndRemoveTaskFromMapAndHistory(){}
+    @Test
+    void catchExceptionWhenCreateSubtaskWithoutEpic () {}
 
+    @Test
+    void putTasksWithoutIdToEmptyMap() {}
+
+    @Test
+    void checkUpDateStatusWhenAddSubtasks() {}
+
+    @Test
+    void checkUpDateTimeWhenAddSubtasks() {}
+
+    @Test
+    void whenViewedAgainTaskMoveToEndOfHistory() { }
+
+    @Test
+    void checkRemoveByIdFromHistoryAndMap() {}
+
+    @Test
+    void catchExceptionIntersectionOfTimesWhenAddTask() {}
+
+    @Test
+    void checkIntersectionOfTimes (){}
 }
