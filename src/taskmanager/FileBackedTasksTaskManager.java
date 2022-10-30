@@ -6,6 +6,8 @@ import task.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class FileBackedTasksTaskManager extends InMemoryTaskTaskManager {
@@ -36,8 +38,8 @@ public class FileBackedTasksTaskManager extends InMemoryTaskTaskManager {
 
 
     public void separate(ArrayList<String> allTasks) {
+        Integer idMax = 0;
         if (allTasks.get(allTasks.size() - 2).isBlank()) {
-            Integer idMax = 0;
             for (int i = 1; i < allTasks.size() - 2; i++) {
                 Task task = taskSerializer.deserialize(allTasks.get(i));
                 idMax = idMax < task.getId() ? task.getId() : idMax;
@@ -53,8 +55,12 @@ public class FileBackedTasksTaskManager extends InMemoryTaskTaskManager {
             }
         } else {
             for (int i = 1; i < allTasks.size(); i++) {
-                super.createTask(taskSerializer.deserialize(allTasks.get(i)));
+                Task task = taskSerializer.deserialize(allTasks.get(i));
+                idMax = idMax < task.getId() ? task.getId() : idMax;
+                setIdTaskGenerator(task.getId() - 1);
+                super.createTask(task);
             }
+            setIdTaskGenerator(idMax);
         }
     }
 
@@ -70,7 +76,7 @@ public class FileBackedTasksTaskManager extends InMemoryTaskTaskManager {
             for (Subtask subtask : getMapSubtasks().values()) {
                 writer.write(taskSerializer.serialize(subtask) + "\n");
             }
-            if (historyToString(super.getHistory()) != null) {
+            if (!super.getHistory().getHistory().isEmpty()) {
                 writer.write("\n");
                 writer.write(historyToString(super.getHistory()));
             }

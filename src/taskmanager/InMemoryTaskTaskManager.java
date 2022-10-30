@@ -39,19 +39,31 @@ public class InMemoryTaskTaskManager implements TaskManager {
 
     @Override
     public void createTask(Task task) {
-            if (allTasks.stream().anyMatch((Task task1) -> intersectionOfTimes (task,task1))){
+            if (task.getType()!=TaskType.SUBTASK && allTasks.stream().anyMatch((Task task1) -> intersectionOfTimes (task,task1))){
                 throw new RuntimeException ("Данное время уже занято");
             }
             idTaskGenerator++;
             if (task.getType() == TaskType.EPIC) {
                 task.setId(idTaskGenerator);
+//                for (Subtask subtask : mapSubtasks.values()){
+//                    if (subtask.getEpicId().equals(task.getId())){
+//                        ((Epic)task).addSubtask(subtask);
+//                    }
+//                }
                 mapEpics.put(task.getId(), (Epic) task);
+
             } else if (task.getType() == TaskType.SUBTASK) {
+                if (allTasks.stream()
+                        .filter((Task task1) -> !task1.getId().equals(task.getId()))
+                        .filter((Task task1) -> !task1.getId().equals(((Subtask)task).getEpicId()))
+                        .anyMatch((Task task1) -> intersectionOfTimes (task,task1))) {
+                    throw new RuntimeException("Данное время уже занято");  //Чтобы можно было в середину Епика добавить
+                }
                 if (mapEpics.containsKey(((Subtask) task).getEpicId())) {
                     task.setId(idTaskGenerator);
                     mapEpics.get(((Subtask) task).getEpicId()).addSubtask((Subtask) task);
                     mapSubtasks.put(task.getId(), (Subtask) task);
-                }else throw new RuntimeException ("Эпик с таким id отсутствует");;
+                }else throw new RuntimeException ("Эпик с таким id отсутствует");
             } else {
                 task.setId(idTaskGenerator);
                 mapTasks.put(task.getId(), task);
@@ -61,6 +73,7 @@ public class InMemoryTaskTaskManager implements TaskManager {
 
     public boolean intersectionOfTimes (Task task1, Task task2){
         return (task1.getStartTime().isAfter(task2.getStartTime())) && (task1.getStartTime().isBefore(task2.getEndTime()))
+                || (task1.getEndTime().isAfter(task2.getStartTime())) && (task1.getEndTime().isBefore(task2.getEndTime()))
                 || task1.getStartTime().equals(task2.getStartTime())
                 || task1.getStartTime().equals(task2.getEndTime())
                 || task1.getEndTime().equals(task2.getStartTime());
@@ -178,13 +191,13 @@ public class InMemoryTaskTaskManager implements TaskManager {
 
     @Override
     public Set<Task> getPrioritizedTasks() {
-        TreeSet <Task> tasks = new TreeSet<Task> (Comparator.comparing(Task::getStartTime).thenComparing(Task::getId));
+        TreeSet <Task> tasks = new TreeSet (Comparator.comparing(Task::getStartTime).thenComparing(Task::getId));
         tasks.addAll(allTasks);
         return  tasks;
     }
 
     public boolean prioritizedTasksIsIntersectionOfTimes (){
-        ArrayList<Task> tasksList = new ArrayList<>(allTasks);
+        ArrayList<Task> tasksList = new ArrayList<>(allTasks.stream().filter((Task task) -> task.getType()!=TaskType.EPIC).collect(Collectors.toList()));
         for (int i=0;i<tasksList.size()-1;i++){
            if (intersectionOfTimes(tasksList.get(i),tasksList.get(i+1))){
                return true;

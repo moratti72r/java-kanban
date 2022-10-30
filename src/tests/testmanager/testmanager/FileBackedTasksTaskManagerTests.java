@@ -8,7 +8,6 @@ import task.Subtask;
 import task.Task;
 import task.TaskStatus;
 import taskmanager.FileBackedTasksTaskManager;
-import taskmanager.InMemoryTaskTaskManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +36,7 @@ class FileBackedTasksTaskManagerTests extends TaskManagerTest <FileBackedTasksTa
         Task task1 = new Task("Что то 1",
                 "Что то сделать 1",
                 TaskStatus.DONE,
-                LocalDateTime.now().minusMinutes(6),
+                LocalDateTime.of(2000, 10, 11, 10, 10),
                 Duration.ofHours(6));
 
 
@@ -48,7 +47,7 @@ class FileBackedTasksTaskManagerTests extends TaskManagerTest <FileBackedTasksTa
         Subtask subtask3 = new Subtask("Что то 3",
                 "Что то сделать 3",
                 TaskStatus.DONE,
-                LocalDateTime.of(2000, 10, 10, 10, 10, 10, 10),
+                LocalDateTime.of(2000, 10, 10, 10, 10),
                 Duration.ofHours(6), 2);
 
         taskManager.createTask(task1); //id = 1
@@ -60,14 +59,16 @@ class FileBackedTasksTaskManagerTests extends TaskManagerTest <FileBackedTasksTa
         assertAll(
                 () -> assertTrue(readFile.getMapTasks().containsValue(task1)),
                 () -> assertTrue(readFile.getMapEpics().containsValue(epic2)),
-                () -> assertTrue(readFile.getMapSubtasks().containsValue(subtask3)));}
+                () -> assertTrue(readFile.getMapSubtasks().containsValue(subtask3)),
+                () -> assertTrue(readFile.getHistory().getHistory().isEmpty())
+    );}
 
     @Test
     void putTaskAndReadWithHistory() throws IOException {
         Task task1 = new Task("Что то 1",
                 "Что то сделать 1",
                 TaskStatus.DONE,
-                LocalDateTime.now().minusMinutes(6),
+                LocalDateTime.of(2000, 10, 11, 10, 10),
                 Duration.ofHours(6));
 
 
@@ -78,7 +79,7 @@ class FileBackedTasksTaskManagerTests extends TaskManagerTest <FileBackedTasksTa
         Subtask subtask3 = new Subtask("Что то 3",
                 "Что то сделать 3",
                 TaskStatus.DONE,
-                LocalDateTime.of(2000, 10, 10, 10, 10, 10, 10),
+                LocalDateTime.of(2000, 10, 10, 10, 10),
                 Duration.ofHours(6), 2);
 
         taskManager.createTask(task1); //id = 1
@@ -96,5 +97,7 @@ class FileBackedTasksTaskManagerTests extends TaskManagerTest <FileBackedTasksTa
                 () -> assertTrue(readFile.getMapEpics().containsValue(epic2)),
                 () -> assertTrue(readFile.getMapSubtasks().containsValue(subtask3)),
                 () -> assertEquals(3,taskManager.getHistory().getHistory().size()),
-                () -> assertTrue(taskManager.getHistory().getHistory().contains(task1)));}
+                () -> assertTrue(taskManager.getHistory().getHistory().contains(task1)),
+                () -> assertTrue(taskManager.getHistory().getHistory().contains(epic2)),
+                () -> assertTrue(taskManager.getHistory().getHistory().contains(subtask3)));}
 }

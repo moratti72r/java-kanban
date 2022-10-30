@@ -72,10 +72,12 @@ public class CustomLinkedList {
 
     public ArrayList<Task> getTasks() {
         ArrayList<Task> tasks = new ArrayList<>();
-        Node node = head;
-        while (node != null) {
-            tasks.add(node.data);
-            node = node.next;
+        if (head!=null) {
+            Node node = head;
+            while (node != null) {
+                tasks.add(node.data);
+                node = node.next;
+            }
         }
         return tasks;
     }

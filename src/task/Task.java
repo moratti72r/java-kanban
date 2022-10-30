@@ -73,7 +73,8 @@ public class Task {
         return Objects.equals(id, task.id)
                 && Objects.equals(name, task.name)
                 && Objects.equals(specification, task.specification)
-                && status == task.status && Objects.equals(startTime, task.startTime)
+                && status == task.status
+                && Objects.equals(startTime, task.startTime)
                 && Objects.equals(duration, task.duration);
     }
 

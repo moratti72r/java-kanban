@@ -2,14 +2,12 @@ package testmanager;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import task.Epic;
-import task.Subtask;
-import task.Task;
-import task.TaskStatus;
+import task.*;
 import taskmanager.InMemoryTaskTaskManager;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -385,6 +383,6 @@ class InMemoryTaskTaskManagerTest extends TaskManagerTest <InMemoryTaskTaskManag
 
             assertEquals(7,taskManager.getPrioritizedTasks().size());
 
-            assertTrue(taskManager.prioritizedTasksIsIntersectionOfTimes());
+            assertFalse(taskManager.prioritizedTasksIsIntersectionOfTimes());
         }
         }
