@@ -1,44 +1,85 @@
 package testmanager;
 
-
 import org.junit.jupiter.api.Test;
 import taskmanager.TaskManager;
 
-abstract class TaskManagerTest <T extends TaskManager> {
+abstract class TaskManagerTest<T extends TaskManager> {
 
     protected T taskManager;
 
+    @Test
+    void catchExceptionWhenGetTaskByIdFromEmptyMap() {
+    }
 
     @Test
-    void catchExceptionWhenGetTaskByIdFromEmptyMap(){}
+    void catchExceptionWhenRemoveTaskByIdFromEmptyMap() {
+    }
 
     @Test
-    void catchExceptionWhenRemoveTaskByIdFromEmptyMap() {}
+    void catchExceptionWhenUpDateTaskFromEmptyMapOrIdNotExist() {
+    }
 
     @Test
-    void catchExceptionWhenUpDateTaskFromEmptyMapOrIdNotExist() {}
+    void catchExceptionWhenCreateSubtaskWithoutEpic() {
+    }
 
     @Test
-    void catchExceptionWhenCreateSubtaskWithoutEpic () {}
+    void putTasksWithoutIdToEmptyMap() {
+    }
 
     @Test
-    void putTasksWithoutIdToEmptyMap() {}
+    void statusEpicUpDateToProgressWhenAddSubtasksWithDifferentStatuses() {
+    }
 
     @Test
-    void checkUpDateStatusWhenAddSubtasks() {}
+    void statusEpicUpDateToNewWhenNoSubtaskOrAddSubtasksWithStatusNew() {
+    }
 
     @Test
-    void checkUpDateTimeWhenAddSubtasks() {}
+    void statusEpicUpDateToDoneWhenAddSubtasksWithStatusDone() {
+    }
 
     @Test
-    void whenViewedAgainTaskMoveToEndOfHistory() { }
+    void checkUpDateTimeWhenAddSubtasks() {
+    }
 
     @Test
-    void checkRemoveByIdFromHistoryAndMap() {}
+    void historyIsEmptyWhenCreateTask() {
+    }
 
     @Test
-    void catchExceptionIntersectionOfTimesWhenAddTask() {}
+    void whenViewedAgainTaskMoveToEndOfHistory() {
+    }
 
     @Test
-    void checkIntersectionOfTimes (){}
+    void removeTaskFromHistoryWhenRemoveById() {
+    }
+
+    @Test
+    void catchExceptionWhenAddTaskWithStartTimeThatIntersectIntervalAnotherTask() {
+    }
+
+    @Test
+    void catchExceptionWhenAddTaskWithEndTimeThatIntersectIntervalAnotherTask() {
+    }
+
+    @Test
+    void catchExceptionWhenAddTaskWithStartTimeEqualsStartTimeAnotherTask() {
+    }
+
+    @Test
+    void catchExceptionWhenAddTaskWithEndTimeEqualsEndTimeAnotherTask() {
+    }
+
+    @Test
+    void catchExceptionWhenAddTaskWithStartTimeEqualsEndTimeAnotherTask() {
+    }
+
+    @Test
+    void catchExceptionWhenAddTaskWithEndTimeEqualsStartTimeAnotherTask() {
+    }
+
+    @Test
+    void checkIntersectionOfTimes() {
+    }
 }

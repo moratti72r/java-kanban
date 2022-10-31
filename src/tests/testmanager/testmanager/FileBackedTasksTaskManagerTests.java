@@ -16,19 +16,27 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileBackedTasksTaskManagerTests extends TaskManagerTest <FileBackedTasksTaskManager>
-
- {
-
+class FileBackedTasksTaskManagerTests extends TaskManagerTest<FileBackedTasksTaskManager> {
     @BeforeEach
     public void newFileBackedTasksTaskManager() throws IOException {
         taskManager = new FileBackedTasksTaskManager("src\\resources\\file1.csv");
     }
 
     @AfterEach
-    public void deleteFile (){
-        File delete = new File ("src\\resources\\file1.csv");
+    public void deleteFile() {
+        File delete = new File("src\\resources\\file1.csv");
         boolean del = delete.delete();
+    }
+
+    @Test
+    void putEpicAndReadWithoutSubtasks() throws IOException {
+        Epic epic1 = new Epic("Что то 1",
+                "Что то сделать 1");
+        taskManager.createTask(epic1);
+
+        FileBackedTasksTaskManager readFile = new FileBackedTasksTaskManager("src\\resources\\file1.csv");
+
+        assertEquals(readFile.getMapEpics().get(1), epic1);
     }
 
     @Test
@@ -50,10 +58,9 @@ class FileBackedTasksTaskManagerTests extends TaskManagerTest <FileBackedTasksTa
                 LocalDateTime.of(2000, 10, 10, 10, 10),
                 Duration.ofHours(6), 2);
 
-        taskManager.createTask(task1); //id = 1
-        taskManager.createTask(epic2); //id = 2
-        taskManager.createTask(subtask3); //id = 3 , epic id = 2
-
+        taskManager.createTask(task1);
+        taskManager.createTask(epic2);
+        taskManager.createTask(subtask3);
         FileBackedTasksTaskManager readFile = new FileBackedTasksTaskManager("src\\resources\\file1.csv");
 
         assertAll(
@@ -61,7 +68,8 @@ class FileBackedTasksTaskManagerTests extends TaskManagerTest <FileBackedTasksTa
                 () -> assertTrue(readFile.getMapEpics().containsValue(epic2)),
                 () -> assertTrue(readFile.getMapSubtasks().containsValue(subtask3)),
                 () -> assertTrue(readFile.getHistory().getHistory().isEmpty())
-    );}
+        );
+    }
 
     @Test
     void putTaskAndReadWithHistory() throws IOException {
@@ -82,9 +90,9 @@ class FileBackedTasksTaskManagerTests extends TaskManagerTest <FileBackedTasksTa
                 LocalDateTime.of(2000, 10, 10, 10, 10),
                 Duration.ofHours(6), 2);
 
-        taskManager.createTask(task1); //id = 1
-        taskManager.createTask(epic2); //id = 2
-        taskManager.createTask(subtask3); //id = 3 , epic id = 2
+        taskManager.createTask(task1);
+        taskManager.createTask(epic2);
+        taskManager.createTask(subtask3);
 
         taskManager.getById(1);
         taskManager.getById(2);
@@ -96,8 +104,9 @@ class FileBackedTasksTaskManagerTests extends TaskManagerTest <FileBackedTasksTa
                 () -> assertTrue(readFile.getMapTasks().containsValue(task1)),
                 () -> assertTrue(readFile.getMapEpics().containsValue(epic2)),
                 () -> assertTrue(readFile.getMapSubtasks().containsValue(subtask3)),
-                () -> assertEquals(3,taskManager.getHistory().getHistory().size()),
+                () -> assertEquals(3, taskManager.getHistory().getHistory().size()),
                 () -> assertTrue(taskManager.getHistory().getHistory().contains(task1)),
                 () -> assertTrue(taskManager.getHistory().getHistory().contains(epic2)),
-                () -> assertTrue(taskManager.getHistory().getHistory().contains(subtask3)));}
+                () -> assertTrue(taskManager.getHistory().getHistory().contains(subtask3)));
+    }
 }

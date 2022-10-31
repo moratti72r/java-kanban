@@ -1,5 +1,6 @@
 package task;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +47,7 @@ public class Epic extends Task {
             this.startTime = LocalDateTime.MAX;
             this.endTime = LocalDateTime.MAX;
         }
+        duration = Duration.between(startTime,endTime);
     }
 
     public void addSubtask(Subtask subtask) {

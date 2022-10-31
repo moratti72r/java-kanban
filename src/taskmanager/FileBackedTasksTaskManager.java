@@ -6,9 +6,8 @@ import task.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class FileBackedTasksTaskManager extends InMemoryTaskTaskManager {
 
@@ -86,15 +85,8 @@ public class FileBackedTasksTaskManager extends InMemoryTaskTaskManager {
     }
 
     public String historyToString(HistoryManager history) {
-        String historyLine = "";
-        if (!history.getHistory().isEmpty()) {
-            for (Task task : history.getHistory()) {
-                historyLine = historyLine + "," + (task.getId().toString());
-            }
-            historyLine = historyLine.substring(1);
 
-        }
-        return historyLine;
+        return history.getHistory().stream().map(Task::getId).map(String::valueOf).collect(Collectors.joining(","));
     }
 
     public List<Integer> historyFromString(String value) {
@@ -112,10 +104,6 @@ public class FileBackedTasksTaskManager extends InMemoryTaskTaskManager {
 
     public void setIdTaskGenerator(Integer id) {
         idTaskGenerator = id;
-    }
-
-    public Integer getIdTaskGenerator() {
-        return idTaskGenerator;
     }
 
     @Override

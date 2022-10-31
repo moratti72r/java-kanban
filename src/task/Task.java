@@ -10,6 +10,7 @@ public class Task {
     protected String specification;
     protected TaskStatus status;
     protected LocalDateTime startTime;
+
     protected Duration duration;
 
     protected Task() {
@@ -60,7 +61,9 @@ public class Task {
     public LocalDateTime getStartTime() {
         return startTime;
     }
-
+    public Duration getDuration() {
+        return duration;
+    }
     public TaskStatus getStatus() {
         return status;
     }
