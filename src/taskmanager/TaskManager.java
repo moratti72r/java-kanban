@@ -14,7 +14,7 @@ public interface TaskManager {
     public HashMap<Integer, Subtask> getMapSubtasks();
 
     public HashMap<Integer, Epic> getMapEpics();
-    public void createTask(Task task);
+    public Integer createTask(Task task);
 
     public void removeTasks() ;
 

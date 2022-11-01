@@ -2,7 +2,10 @@ package testmanager;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import task.*;
+import task.Epic;
+import task.Subtask;
+import task.Task;
+import task.TaskStatus;
 import taskmanager.InMemoryTaskTaskManager;
 
 import java.time.Duration;
@@ -633,13 +636,15 @@ class InMemoryTaskTaskManagerTest extends TaskManagerTest<InMemoryTaskTaskManage
         taskManager.createTask(taskId6);
         taskManager.createTask(taskId7);
 
-        boolean isIntersectionOfTimes = true;
+        boolean isIntersectionOfTimes = false;
         ArrayList<Task> tasksList = new ArrayList<>(new ArrayList<>(taskManager.getPrioritizedTasks()));
         for (int i = 0; i < tasksList.size() - 1; i++) {
-            if (taskManager.intersectionOfTimes(tasksList.get(i), tasksList.get(i + 1))) {
-                isIntersectionOfTimes = true;
-                break;
-            } else isIntersectionOfTimes = false;
+            if (isIntersectionOfTimes) break;
+            if (tasksList.get(i).getStartTime().isBefore(tasksList.get(i + 1).getStartTime())) {
+                isIntersectionOfTimes = Duration.between(tasksList.get(i).getStartTime(), tasksList.get(i + 1).getStartTime()).toMinutes() <= tasksList.get(i).getDuration().toMinutes();
+            } else if (tasksList.get(i).getStartTime().isAfter(tasksList.get(i + 1).getStartTime())) {
+                isIntersectionOfTimes = Duration.between(tasksList.get(i + 1).getStartTime(), tasksList.get(i).getStartTime()).toMinutes() <= tasksList.get(i + 1).getDuration().toMinutes();
+            } else isIntersectionOfTimes = tasksList.get(i).getStartTime().equals(tasksList.get(i + 1).getStartTime());
         }
 
         assertEquals(6, taskManager.getPrioritizedTasks().size());

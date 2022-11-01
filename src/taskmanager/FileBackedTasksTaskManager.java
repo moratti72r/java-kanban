@@ -107,9 +107,10 @@ public class FileBackedTasksTaskManager extends InMemoryTaskTaskManager {
     }
 
     @Override
-    public void createTask(Task task) {
+    public Integer createTask(Task task) {
         super.createTask(task);
         save();
+        return idTaskGenerator;
     }
 
 
