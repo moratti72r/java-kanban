@@ -64,13 +64,14 @@ public class InMemoryTaskTaskManager implements TaskManager {
     }
 
     private boolean intersectionOfTimes(Task task1, Task task2) {
-        if (task1.getStartTime().isBefore(task2.getStartTime())) {
-            return (Duration.between(task1.getStartTime(), task2.getStartTime()).toMinutes()) <= task1.getDuration().toMinutes();
-        } else if (task1.getStartTime().isAfter(task2.getStartTime())) {
-            return (Duration.between(task2.getStartTime(), task1.getStartTime()).toMinutes()) <= task2.getDuration().toMinutes();
-        } else return task1.getStartTime().equals(task2.getStartTime());
+        if (task1.getStartTime()!=null) {
+            if (task1.getStartTime().isBefore(task2.getStartTime())) {
+                return (Duration.between(task1.getStartTime(), task2.getStartTime()).toMinutes()) <= task1.getDuration().toMinutes();
+            } else if (task1.getStartTime().isAfter(task2.getStartTime())) {
+                return (Duration.between(task2.getStartTime(), task1.getStartTime()).toMinutes()) <= task2.getDuration().toMinutes();
+            } else return task1.getStartTime().equals(task2.getStartTime());
+        }else return false;
     }
-    //незначительно изменил, логика работает
 
     @Override
     public void removeTasks() {

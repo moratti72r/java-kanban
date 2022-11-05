@@ -19,8 +19,8 @@ public class CsvTaskSerializer implements TaskSerializer {
         TaskStatus taskStatus = TaskStatus.valueOf(split[3]);
         String specification = split[4];
 
-        LocalDateTime startTime = split.length > 5 ? LocalDateTime.parse(split[5],formatter) : LocalDateTime.MAX;
-        LocalDateTime endTime = split.length > 5 ? LocalDateTime.parse(split[6],formatter) : LocalDateTime.MAX;
+        LocalDateTime startTime = split.length > 5 ? LocalDateTime.parse(split[5],formatter) : null;
+        LocalDateTime endTime = split.length > 5 ? LocalDateTime.parse(split[6],formatter) : null;
         Duration duration = split.length > 5 ? Duration.between(startTime,endTime) : null;
         Integer idEpic = split.length > 7 ? Integer.parseInt(split[7]) : null;
 
@@ -45,7 +45,7 @@ public class CsvTaskSerializer implements TaskSerializer {
                 + task.getStatus() + ","
                 + task.getSpecification();
 
-        if (task.getStartTime()!=LocalDateTime.MAX){
+        if (task.getStartTime()!=null){
             value = value + "," + task.getStartTime().format(formatter) + "," + task.getEndTime().format(formatter);
         }
         if (task instanceof Subtask) {
