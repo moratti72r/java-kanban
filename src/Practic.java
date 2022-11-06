@@ -1,4 +1,4 @@
-import com.google.gson.Gson;
+import com.google.gson.*;
 import task.Epic;
 import task.Subtask;
 import task.Task;
@@ -42,7 +42,17 @@ public class Practic {
         tm.createTask(task4);
         tm.createTask(task5);
 
-        System.out.println(gson.toJson(tm.getMapTasks().values()));
-        System.out.println(gson.toJson(tm.getPrioritizedTasks()));
+        String tasks = gson.toJson(tm.getMapTasks().values());
+
+        JsonElement jsonElement = JsonParser.parseString(tasks);
+        JsonArray jsonArray = jsonElement.getAsJsonArray();
+        for (JsonElement jsEl : jsonArray) {
+            System.out.println(jsEl);
+//            JsonObject jsObj = jsEl.getAsJsonObject();
+
+        }
+//        System.out.println(gson.toJson(tm.getMapTasks().values()));
+//        System.out.println(gson.toJson(tm.getMapEpics().values()));
+//        System.out.println(gson.toJson(tm.getPrioritizedTasks()));
     }
 }

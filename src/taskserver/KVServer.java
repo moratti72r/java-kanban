@@ -1,5 +1,9 @@
 package taskserver;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
@@ -43,7 +47,27 @@ public class KVServer {
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
-                String response = data.get(key);
+                String response = null;
+                String rawQuery = h.getRequestURI().getRawQuery();
+                if (rawQuery.contains("id=")){
+                    int id = 0;
+                    String[]split = rawQuery.split("&");
+                    for (String rqId:split){
+                        if (rqId.startsWith("id=")){
+                            id = Integer.parseInt(rqId.substring("id=".length()));
+                        }
+                    }
+                    JsonElement jsonElement = JsonParser.parseString(data.get(key));
+                    JsonArray jsonArray = jsonElement.getAsJsonArray();
+                    for (JsonElement jsEl:jsonArray){
+                        JsonObject jsObj = jsEl.getAsJsonObject();
+                        if (jsObj.get("id").getAsInt()==id){
+                            response = jsObj.toString();
+                        }
+                    }
+                }else {
+                    response = data.get(key);
+                }
                 h.getResponseHeaders().add("Content-Type", "application/json");
                 h.sendResponseHeaders(200, 0);
 
@@ -59,6 +83,7 @@ public class KVServer {
         }
         // TODO Добавьте получение значения по ключу
     }
+
 
     private void save(HttpExchange h) throws IOException {
         try {

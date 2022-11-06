@@ -22,7 +22,7 @@ public class KVTaskClient {
                 .build();
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            API ="API_TOKEN_" + response.body();
+            API ="API_TOKEN=" + response.body();
         }catch (IOException | InterruptedException e) {
             System.out.println("Во время выполнения запроса ресурса по url-адресу: '" + url + "', возникла ошибка.\n" +
                     "Проверьте, пожалуйста, адрес и повторите попытку.");
@@ -36,19 +36,32 @@ public class KVTaskClient {
                 .uri(url)
                 .POST(body)
                 .build();
+        try {
+            client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException | InterruptedException e) {
+            System.out.println("Во время выполнения запроса ресурса по URL-адресу: '" + url + "', возникла ошибка.\n" +
+                    "Проверьте, пожалуйста, адрес и повторите попытку.");
+        }
     }
 
     public String load (String key){
-        URI url = URI.create(uri+"load/"+key+"?"+API);
+        URI url = null;
+        if (key.contains("?")){
+            url = URI.create(uri + "load/" + key + "&" + API);
+        }else {
+            url = URI.create(uri + "load/" + key + "?" + API);
+        }
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        String taskJson="";
+        String taskJson=null;
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            taskJson = response.body();
+            if (response.statusCode()==200) {
+                taskJson = response.body();
+            }
         } catch (IOException | InterruptedException e) {
             System.out.println("Во время выполнения запроса ресурса по URL-адресу: '" + url + "', возникла ошибка.\n" +
                     "Проверьте, пожалуйста, адрес и повторите попытку.");

@@ -11,11 +11,11 @@ import java.util.stream.Collectors;
 
 public class FileBackedTasksTaskManager extends InMemoryTaskTaskManager {
 
-    private final String textFile;
+    private String textFile;
 
     private final TaskSerializer taskSerializer = new CsvTaskSerializer();
 
-
+    protected FileBackedTasksTaskManager(){}
     public FileBackedTasksTaskManager(String textFile) throws IOException {
         this.textFile = textFile;
 
@@ -36,7 +36,7 @@ public class FileBackedTasksTaskManager extends InMemoryTaskTaskManager {
     }
 
 
-    public void separate(ArrayList<String> allTasks) {
+    private void separate(ArrayList<String> allTasks) {
         Integer idMax = 0;
         if (allTasks.get(allTasks.size() - 2).isBlank()) {
             for (int i = 1; i < allTasks.size() - 2; i++) {
@@ -84,12 +84,12 @@ public class FileBackedTasksTaskManager extends InMemoryTaskTaskManager {
         }
     }
 
-    public String historyToString(HistoryManager history) {
+    private String historyToString(HistoryManager history) {
 
         return history.getHistory().stream().map(Task::getId).map(String::valueOf).collect(Collectors.joining(","));
     }
 
-    public List<Integer> historyFromString(String value) {
+    private List<Integer> historyFromString(String value) {
         List<Integer> history = new ArrayList<>();
         if (value != null) {
             if (!value.equals("")) {

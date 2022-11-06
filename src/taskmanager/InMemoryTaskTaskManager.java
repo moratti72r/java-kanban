@@ -98,6 +98,7 @@ public class InMemoryTaskTaskManager implements TaskManager {
         for (Epic epic : mapEpics.values()) {
             epic.getSubtasks().clear();
             epic.updateStatus();
+            epic.calculateTime();
         }
     }
 
