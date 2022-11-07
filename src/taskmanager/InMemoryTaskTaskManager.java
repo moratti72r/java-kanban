@@ -21,7 +21,7 @@ public class InMemoryTaskTaskManager implements TaskManager {
     protected final HashMap<Integer, Task> mapTasks = new HashMap<>();
     protected final HashMap<Integer, Subtask> mapSubtasks = new HashMap<>();
     protected final HashMap<Integer, Epic> mapEpics = new HashMap<>();
-    private final TreeSet<Task> allTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
+    protected final TreeSet<Task> allTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
 
     @Override
     public HashMap<Integer, Task> getMapTasks() {
@@ -81,6 +81,7 @@ public class InMemoryTaskTaskManager implements TaskManager {
                     history.remove(id);
                 }
             }
+            allTasks.removeIf(task -> id.equals(task.getId()));
         }
         mapTasks.clear();
     }
@@ -92,7 +93,7 @@ public class InMemoryTaskTaskManager implements TaskManager {
                 if (id.equals(task.getId())) {
                     history.remove(id);
                 }
-            }
+            }allTasks.removeIf(task -> id.equals(task.getId()));
         }
         mapSubtasks.clear();
         for (Epic epic : mapEpics.values()) {

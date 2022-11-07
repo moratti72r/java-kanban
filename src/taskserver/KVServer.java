@@ -49,39 +49,41 @@ public class KVServer {
                 }
                 String response = null;
                 String rawQuery = h.getRequestURI().getRawQuery();
-                if (rawQuery.contains("id=")){
+                if (rawQuery.contains("id=")) {
                     int id = 0;
-                    String[]split = rawQuery.split("&");
-                    for (String rqId:split){
-                        if (rqId.startsWith("id=")){
+                    String[] split = rawQuery.split("&");
+                    for (String rqId : split) {
+                        if (rqId.startsWith("id=")) {
                             id = Integer.parseInt(rqId.substring("id=".length()));
                         }
                     }
                     JsonElement jsonElement = JsonParser.parseString(data.get(key));
                     JsonArray jsonArray = jsonElement.getAsJsonArray();
-                    for (JsonElement jsEl:jsonArray){
+                    for (JsonElement jsEl : jsonArray) {
                         JsonObject jsObj = jsEl.getAsJsonObject();
-                        if (jsObj.get("id").getAsInt()==id){
+                        if (jsObj.get("id").getAsInt() == id) {
                             response = jsObj.toString();
                         }
                     }
-                }else {
-                    response = data.get(key);
-                }
-                h.getResponseHeaders().add("Content-Type", "application/json");
-                h.sendResponseHeaders(200, 0);
-
-                try (OutputStream os = h.getResponseBody()) {
-                    os.write(response.getBytes());
+                } else {
+                    if (data.containsKey(key)) {
+                        response = data.get(key);
+                        h.getResponseHeaders().add("Content-Type", "application/json");
+                        h.sendResponseHeaders(200, 0);
+                        try (OutputStream os = h.getResponseBody()) {
+                            os.write(response.getBytes());
+                        }
+                    } else
+                        System.out.println("/load По данному пути данные отсутствуют");
+                    h.sendResponseHeaders(404, 0);
                 }
             } else {
                 System.out.println("/load ждёт GET-запрос, а получил: " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);
             }
-        }finally {
+        } finally {
             h.close();
         }
-        // TODO Добавьте получение значения по ключу
     }
 
 
@@ -137,6 +139,10 @@ public class KVServer {
         System.out.println("Открой в браузере http://localhost:" + PORT + "/");
         System.out.println("API_TOKEN: " + apiToken);
         server.start();
+    }
+
+    public void stop() {
+        server.stop(0);
     }
 
     private String generateApiToken() {
