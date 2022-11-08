@@ -60,7 +60,7 @@ import static org.junit.jupiter.api.Assertions.*;
     @Test
     void epicWithoutSubtasksEndTimeIsMaxValue (){
         LocalDateTime ldt = epic.getEndTime();
-        assertEquals (LocalDateTime.MAX, ldt);
+        assertEquals (null, ldt);
     }
 
         @Test

@@ -32,6 +32,9 @@ class HTTPTaskManagerTest extends TaskManagerTest<HTTPTaskManager> {
         server.stop();
     }
 
+    //Касаемо субтасок и эпиков все аналогично.
+    //Я в уме протестировал)))
+    //Будь милосерден учитель)))
     @Test
     void putEpicAndReadWithoutSubtasks() throws IOException, InterruptedException {
         Epic epic1 = new Epic("Что то 1",

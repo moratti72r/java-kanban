@@ -43,20 +43,20 @@ public class InMemoryTaskTaskManager implements TaskManager {
         if (allTasks.stream().anyMatch((Task task1) -> intersectionOfTimes(task, task1))) {
             throw new RuntimeException("Данное время уже занято");
         }
-        idTaskGenerator++;
-        if (task.getType() == TaskType.EPIC) {
+        if (task.getId()==null) {
+            idTaskGenerator++;
             task.setId(idTaskGenerator);
+        }
+        if (task.getType() == TaskType.EPIC) {
             mapEpics.put(task.getId(), (Epic) task);
 
         } else if (task.getType() == TaskType.SUBTASK) {
             if (mapEpics.containsKey(((Subtask) task).getEpicId())) {
-                task.setId(idTaskGenerator);
                 mapEpics.get(((Subtask) task).getEpicId()).addSubtask((Subtask) task);
                 mapSubtasks.put(task.getId(), (Subtask) task);
                 allTasks.add(task);
             } else throw new RuntimeException("Эпик с таким id отсутствует");
         } else {
-            task.setId(idTaskGenerator);
             mapTasks.put(task.getId(), task);
             allTasks.add(task);
         }

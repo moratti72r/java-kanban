@@ -74,7 +74,6 @@ class InMemoryTaskTaskManagerTest extends TaskManagerTest<InMemoryTaskTaskManage
 
         Exception exSubtasks = assertThrows(Exception.class, () -> taskManager.createTask(subtask1));
         assertEquals("Эпик с таким id отсутствует", exSubtasks.getMessage());
-        assertNull(subtask1.getId());
     }
 
     @Test

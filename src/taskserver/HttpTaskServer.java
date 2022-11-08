@@ -40,7 +40,6 @@ public class HttpTaskServer {
         System.out.println("HTTP-сервер запущен на " + PORT + " порту!");
     }
 
-    //Перечитал ТЗ. По нему вроде все так )))
     public void handleTask(HttpExchange httpExchange) throws IOException {
         try {
             String method = httpExchange.getRequestMethod();

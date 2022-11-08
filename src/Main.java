@@ -1,4 +1,4 @@
-import taskmanager.HTTPTaskManager;
+import taskserver.HttpTaskServer;
 
 import java.io.IOException;
 
@@ -6,9 +6,10 @@ public class Main {
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-//        HttpTaskServer srv = new HttpTaskServer();
+        HttpTaskServer srv = new HttpTaskServer();
+
 //        new KVServer().start();
-        HTTPTaskManager manager = new HTTPTaskManager("http://localhost:8078/");
+//        HTTPTaskManager manager = new HTTPTaskManager("http://localhost:8078/");
 
 //        Task task1 = new Task("Что то 1",
 //                "Что то сделать 1",
@@ -47,9 +48,9 @@ public class Main {
 //        manager.removeTasks();
 
 
-        System.out.println(manager.getMapSubtasks().values());
-        System.out.println(manager.getMapEpics().values());
-        System.out.println(manager.getMapTasks().values());
-        System.out.println(manager.getHistory().getHistory());
+//        System.out.println(manager.getMapSubtasks().values());
+//        System.out.println(manager.getMapEpics().values());
+//        System.out.println(manager.getMapTasks().values());
+//        System.out.println(manager.getHistory().getHistory());
     }
 }

@@ -42,7 +42,7 @@ public class FileBackedTasksTaskManager extends InMemoryTaskTaskManager {
             for (int i = 1; i < allTasks.size() - 2; i++) {
                 Task task = taskSerializer.deserialize(allTasks.get(i));
                 idMax = idMax < task.getId() ? task.getId() : idMax;
-                setIdTaskGenerator(task.getId() - 1);
+                setIdTaskGenerator(task.getId());
                 super.createTask(task);
             }
             setIdTaskGenerator(idMax);
@@ -56,7 +56,7 @@ public class FileBackedTasksTaskManager extends InMemoryTaskTaskManager {
             for (int i = 1; i < allTasks.size(); i++) {
                 Task task = taskSerializer.deserialize(allTasks.get(i));
                 idMax = idMax < task.getId() ? task.getId() : idMax;
-                setIdTaskGenerator(task.getId() - 1);
+                setIdTaskGenerator(task.getId());
                 super.createTask(task);
             }
             setIdTaskGenerator(idMax);

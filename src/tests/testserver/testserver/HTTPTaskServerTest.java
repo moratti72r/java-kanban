@@ -34,13 +34,13 @@ public class HTTPTaskServerTest {
 
     @AfterEach
     public void closeHTTPTaskServer() throws IOException, InterruptedException {
-//        URI url = URI.create("http://localhost:8080/tasks");
-//        HttpRequest request = HttpRequest.newBuilder()
-//                .uri(url)
-//                .DELETE()
-//                .build();
-//
-//        client.send(request, HttpResponse.BodyHandlers.ofString());
+        URI url = URI.create("http://localhost:8080/tasks");
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(url)
+                .DELETE()
+                .build();
+
+        client.send(request, HttpResponse.BodyHandlers.ofString());
 
         srv.stop();
     }
@@ -155,6 +155,9 @@ public class HTTPTaskServerTest {
                 LocalDateTime.of(2000, 10, 10, 10, 10),
                 Duration.ofMinutes(10));
 
+        getRequstPostMethodWithTaskAtURL("http://localhost:8080/tasks/task", task1);
+
+
         HttpRequest request1 = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/tasks/task"))
                 .GET()
@@ -181,6 +184,14 @@ public class HTTPTaskServerTest {
 
     @Test
     public void getStatus200WhenCorrectQueryString() {
+        Task task1 = new Task(1, "Имя", "спецификация",
+                TaskStatus.DONE,
+                LocalDateTime.of(2000, 10, 10, 10, 10),
+                Duration.ofMinutes(10));
+
+        getRequstPostMethodWithTaskAtURL("http://localhost:8080/tasks/task", task1);
+
+
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/tasks/task?id=1"))
                 .header("Accept", "application/json")
@@ -204,6 +215,19 @@ public class HTTPTaskServerTest {
                 TaskStatus.DONE,
                 LocalDateTime.of(2000, 10, 10, 10, 10),
                 Duration.ofMinutes(10));
+
+        getRequstPostMethodWithTaskAtURL("http://localhost:8080/tasks/task", task1);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/tasks/task?id=1"))
+                .header("Accept", "application/json")
+                .GET()
+                .build();
+
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException | InterruptedException e) {
+            System.out.println("Ошибка");
+        }
 
         HttpRequest request1 = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/tasks/history"))
@@ -248,6 +272,12 @@ public class HTTPTaskServerTest {
 
     @Test
     public void getStatus400WhenAddTaskWithIntersectionTime() {
+        Task task1 = new Task(1, "Имя", "спецификация",
+                TaskStatus.DONE,
+                LocalDateTime.of(2000, 10, 10, 10, 10),
+                Duration.ofMinutes(10));
+
+        getRequstPostMethodWithTaskAtURL("http://localhost:8080/tasks/task", task1);
 
         Task task2 = new Task(2, "Имя", "спецификация",
                 TaskStatus.DONE,
@@ -301,6 +331,12 @@ public class HTTPTaskServerTest {
 
     @Test
     public void getStatus403WhenDeleteRequestNotCorrectQueryString() {
+        Task task1 = new Task(1, "Имя", "спецификация",
+                TaskStatus.DONE,
+                LocalDateTime.of(2000, 10, 10, 10, 10),
+                Duration.ofMinutes(10));
+        getRequstPostMethodWithTaskAtURL("http://localhost:8080/tasks/task", task1);
+
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/tasks/task?id=2"))
                 .DELETE()
@@ -318,6 +354,12 @@ public class HTTPTaskServerTest {
 
     @Test
     public void getStatus200WhenDeleteRequestCorrectQueryString() {
+        Task task1 = new Task(1, "Имя", "спецификация",
+                TaskStatus.DONE,
+                LocalDateTime.of(2000, 10, 10, 10, 10),
+                Duration.ofMinutes(10));
+        getRequstPostMethodWithTaskAtURL("http://localhost:8080/tasks/task", task1);
+
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/tasks/task?id=1"))
                 .DELETE()
@@ -337,6 +379,12 @@ public class HTTPTaskServerTest {
 
     @Test
     public void getStatus200WhenDeleteRequestWithoutQueryString() {
+        Task task1 = new Task(1, "Имя", "спецификация",
+                TaskStatus.DONE,
+                LocalDateTime.of(2000, 10, 10, 10, 10),
+                Duration.ofMinutes(10));
+        getRequstPostMethodWithTaskAtURL("http://localhost:8080/tasks/task", task1);
+
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/tasks/task"))
                 .DELETE()
@@ -350,6 +398,21 @@ public class HTTPTaskServerTest {
             System.out.println("Ошибка");
         }
         assertEquals(200, status);
+    }
+
+    private void getRequstPostMethodWithTaskAtURL(String uri, Task task) {
+        String jsonTask = gson.toJson(task);
+
+        HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(jsonTask);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(uri))
+                .POST(body)
+                .build();
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException | InterruptedException e) {
+            System.out.println("Ошибка");
+        }
     }
 }
 
