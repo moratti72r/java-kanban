@@ -18,11 +18,21 @@ public class Managers {
         }
     }
 
+    private static final HTTPTaskManager HTTP_TASK_MANAGER;
 
+    static {
+        try {
+            HTTP_TASK_MANAGER = new HTTPTaskManager("http://localhost:8078/");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-
+    public static TaskManager getInMemoryTaskTaskManager(){return IN_MEMORY_TASK_TASK_MANAGER;}
     public static TaskManager getDefault(){
-        return IN_MEMORY_TASK_TASK_MANAGER;
+        return HTTP_TASK_MANAGER;
     }
 
     public static HistoryManager getDefaultHistory(){ return historyManager; }
@@ -30,4 +40,6 @@ public class Managers {
     public static TaskManager getFileBackedTasksTaskManager(){
         return FILE_BACKED_TASKS_TASK_MANAGER;
     }
+
+    public static TaskManager getHTTPTaskManager() {return HTTP_TASK_MANAGER;}
 }
